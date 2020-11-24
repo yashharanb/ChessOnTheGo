@@ -4,7 +4,7 @@ First, clone this reprository.
 
 Then, run
 
-### cd chess_on_the_go_frontend
+### cd frontend
 - run:
 
 ### `npm install`
@@ -12,7 +12,7 @@ Then, run
 
 Then 
 
-### cd chess_on_the_go_backend
+### cd backend
 - run:
 
 ### `npm install`
