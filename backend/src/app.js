@@ -9,9 +9,9 @@ const io = require('socket.io')(http);
 
 app.get("/", (req, res) => res.send("Good monring sunshine!"));
 
+
 // user in message has info:
 // email_address, username,isAdmin, elo,  'state' <= queue,game,none,invalid
-
 
 //note, before connecting,
 io.on('connection', socket => {
@@ -21,6 +21,7 @@ io.on('connection', socket => {
         // make sure is admin.
         // maybe have range of users... like is futures proofed this way, but also needs a lot of state... not sure if worth.
         // each message has full list of all users (stateless) (assuming that is what u guys want).
+
 
         //    subscribes to "users" client event
     });
