@@ -1,7 +1,7 @@
 body, html {
   height: 100%;
   width: 100%;
-  /* background-color: #fff1d7 !important; */
+  background-color: #fff1d7 !important;
 }
 
 .App {
@@ -58,8 +58,4 @@ body, html {
 .brown-border {
   border-color: #d39c2f !important;
   border: solid 4px !important;
-}
-
-#root {
-  height: 55%;
 }
