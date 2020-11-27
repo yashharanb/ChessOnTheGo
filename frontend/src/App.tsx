@@ -4,12 +4,16 @@ import './App.css';
 import 'bootswatch/dist/slate/bootstrap.min.css';
 import { PlayerMainMenu } from './MainMenu/PlayerMainMenu';
 import { PlayerStatistics } from "./PlayerStatistics";
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faChessKing } from '@fortawesome/free-solid-svg-icons'
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   Link
 } from "react-router-dom";
+
+library.add(faChessKing);
 
 function App() {
   return (

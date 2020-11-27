@@ -59,3 +59,8 @@ body, html {
   border-color: #d39c2f !important;
   border: solid 4px !important;
 }
+
+.chess-king {
+  color: #d39c2f;
+  margin-right: 3rem;
+}

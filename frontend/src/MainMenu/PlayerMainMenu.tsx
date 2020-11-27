@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import App from '../App';
 import { PlayerStatistics } from "../PlayerStatistics";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
     BrowserRouter as Router,
     Switch,
@@ -20,10 +21,22 @@ export function PlayerMainMenu() {
             <div className="row">
                 <div className="col">
                     <div className="jumbotron brown-border content-container">
-                        <p className="lead">Games played: {4}</p>
-                        <p className="lead">Games won: {4}</p>
-                        <p className="lead">Games lost: {4}</p>
-                        <p className="lead">Games tied: {4}</p>
+                        <p className="lead">
+                            <FontAwesomeIcon icon="chess-king" className="chess-king fa-3x"  style={{marginLeft: 15}}/>
+                            Games played: {4}
+                        </p>
+                        <p className="lead">
+                            <FontAwesomeIcon icon="chess-king" className="chess-king fa-3x"/>
+                            Games won: {4}
+                        </p>
+                        <p className="lead">
+                            <FontAwesomeIcon icon="chess-king" className="chess-king fa-3x"/>
+                            Games lost: {4}
+                        </p>
+                        <p className="lead">
+                            <FontAwesomeIcon icon="chess-king" className="chess-king fa-3x"/>
+                            Games tied: {4}
+                        </p>
                     </div>
                 </div>
             </div>
