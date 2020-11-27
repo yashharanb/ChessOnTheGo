@@ -443,3 +443,5 @@ backend/.env
 .env.test.local
 .env.production.local
 
+backend/makeEnv.bat
+backend/makeEnv.txt
