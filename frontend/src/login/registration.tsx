@@ -1,6 +1,6 @@
 import 'bootswatch/dist/slate/bootstrap.min.css';
 import React, { useState } from 'react';
-import logo from './logo.png';
+import logo from '../logo.png';
 import {Router, Route, Link} from 'react-router-dom';
 
 export function RegisterPage(){
@@ -14,31 +14,28 @@ export function RegisterPage(){
       </div>
       <fieldset>
         <div className="form-group">
-          <label htmlFor="exampleInputEmail1">Email address</label>
-          <input required type="email" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email"></input>
+          <input required type="email" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" style={{width:"40%",display: "inline-block"}}></input>
         </div>
         <div className="form-group">
-          <label htmlFor="exampleInputEmail1">User Name</label>
-          <input required type="text" className="form-control" id="exampleInputEmail1" placeholder="Enter Username"></input>
+          <input required type="text" className="form-control" id="exampleInputEmail1" placeholder="Enter Username"  style={{width:"40%",display: "inline-block"}}></input>
         </div>
-  
-        <div className="input-group">
-        <label htmlFor="exampleInputPassword1">Password</label>
 
-        <label htmlFor="exampleInputPassword1">Confirm Password</label>
+        <div className="input-group"  style={{width:"40%",display: "inline-block"}}>
+
+          <input required type="password" className="form-control" id="exampleInputPassword1" placeholder="Password"  style={{width:"50%",display: "inline-block"}}></input>
+          <input required type="password" className="form-control" id="exampleInputPassword1" placeholder="Confirm Password"  style={{width:"50%",display: "inline-block"}}></input>
+          <p></p>
         </div>
-        <div className="input-group">
-          <div className="input-group-prepend">
-            <span className="input-group-text">*</span>
+        <div className="container" style={{width:"40%"}}>
+        <div className="row"  >
+            <div className="col " >
+              <Link className="btn btn-secondary " to="./login" >Go to Login</Link>
+            </div>
+            <div className="col"  >
+              <button type="submit"  id="registration" className="btn btn-secondary ">Register</button>
+            </div>
           </div>
-          <input required type="password" className="form-control" id="exampleInputPassword1" placeholder="Password"></input>
-          <div className="input-group-prepend">
-            <span className="input-group-text">*</span>
-          </div>
-          <input required type="password" className="form-control" id="exampleInputPassword1" placeholder="Confirm Password"></input>
         </div>
-        <Link className="btn btn-link" to="./login">Login to Chess On The Go</Link>
-        <button type="submit"  id="registration" className="btn btn-primary">Register</button>
         </fieldset>
       </form>
     );
