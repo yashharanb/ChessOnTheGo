@@ -1,3 +1,9 @@
+body, html {
+  height: 100%;
+  width: 100%;
+  background-color: #fff1d7 !important;
+}
+
 .App {
   text-align: center;
 }
@@ -35,4 +41,26 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.card {
+  max-width: 20rem;
+}
+
+.jumbotron {
+  color: #000000;
+}
+
+.content-container {
+  background-color: #ffe3ae !important;
+}
+
+.brown-border {
+  border-color: #d39c2f !important;
+  border: solid 4px !important;
+}
+
+.chess-king {
+  color: #d39c2f;
+  margin-right: 3rem;
 }
