@@ -1,0 +1,1 @@
+"DB_CONNECTION = mongodb+srv://"YP":"seng513"@cluster0.86s9z.mongodb.net/ChessOnTheGoDB?retryWrites=true&w=majority" 
