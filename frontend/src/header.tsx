@@ -5,21 +5,21 @@ import { Router, Route, Link } from 'react-router-dom';
 
 export function Header() {
   return (
-    <nav className="navbar navbar-inverse" style={{ "backgroundColor": "#A77A23", height: "65px", paddingTop: "5px" }}>
-      <div className="container-fluid">
+    <nav className="navbar navbar-inverse">
+      <div className="container-fluid header-container">
         <div className="navbar-header">
-          <a className="navbar-brand" href="#" style={{ margin: "0", padding: "0" }}>
-            <img src={logo} className="img-responsive" style={{ height: "50px", paddingRight: "15px", paddingLeft: "5px" }}></img>
+          <a className="navbar-brand site-logo" href="#">
+            <img src={logo} className="img-responsive"></img>
           </a>
         </div>
 
-        <ul className="nav navbar-nav navbar-right" style={{ display: "inline-block" }}>
-          <li className="navbar-text navbar-right" style={{ color: "#fff", display: "inline-block", fontSize: "20px", marginRight: "1em" }}>
+        <ul className="nav navbar-nav navbar-right d-inline-block">
+          <li className="navbar-text navbar-right d-inline-block">
             Name   |
           </li>
 
-          <li className="active" style={{ color: "#ffff", display: "inline-block", fontSize: "20px" }}>
-            <Link className="btn btn-outline-light" to="./login" style={{ color: "#ffff", display: "inline-block", fontSize: "20px" }}>Logout</Link>
+          <li className="active d-inline-block">
+            <Link className="btn btn-outline-light btn-logout d-inline-block" to="./login">Logout</Link>
           </li>
 
         </ul>
