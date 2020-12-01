@@ -1,10 +1,13 @@
 const mongoose = require('mongoose');
 const {Schema, connect,model,Types}=mongoose;
+const env=require('dotenv').config()
+console.log(env.parsed)
 
-connect('mongodb://127.0.0.1:27017/?gssapiServiceName=mongodb',{useNewUrlParser: true, useUnifiedTopology: true}).catch(e=>{
+
+connect(env.parsed.DB_CONNECTION,{useNewUrlParser: true, useUnifiedTopology: true}).catch(e=>{
     //simply crash program on db error
     throw e;
-});
+}).then(value => console.log(value));
 
 
 

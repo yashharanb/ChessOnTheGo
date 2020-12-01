@@ -1,5 +1,6 @@
 const {HistoricalGame,CurrentGame,User,QueuedUser}=require("./models")
 
+
 const express = require("express");
 const app = express();
 const port = 8000;
@@ -46,9 +47,9 @@ io.on('connection', socket => {
         makeMoveListener=()=>{
             // fires to 'game' client event, for all clients listening to this particular game.
             // Make a single move on client
-
         };
         socket.on("make_move",makeMoveListener)
+
 
         //when game ended:
         //unsubscribes to game client event
