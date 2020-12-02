@@ -33,7 +33,7 @@ function App() {
           <Route path="/registration" component={RegisterPage} />
           <Fragment>
             <Header />
-            <div className="h-100">
+            <div>
               <div className="App d-flex justify-content-center h-100 align-middle">
                 <Route path='/menu' component={PlayerMainMenu} />
                 <Route path='/queue' component={Queue} />

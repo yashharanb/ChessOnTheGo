@@ -90,3 +90,7 @@ body, html {
 .ag-cell{
   text-align: left;
 }
+
+.delete_button {
+  margin-top: 40px;
+}
