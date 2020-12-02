@@ -71,7 +71,7 @@ body, html {
   margin-right: 3rem;
 }
 
-.admin {
+.admin, .stats {
   height: 100%;
   width: 100%;
 }

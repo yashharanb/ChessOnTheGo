@@ -37,7 +37,7 @@ function App() {
               <div className="App d-flex justify-content-center h-100 align-middle">
                 <Route path='/menu' component={PlayerMainMenu} />
                 <Route path='/queue' component={Queue} />
-                <Route path='/PlayerStatistics' component={PlayerStatistics} />
+                <Route path='/playerstats' component={PlayerStatistics} />
                 <Route path='/admin' component={Admin} />
               </div>
             </div>

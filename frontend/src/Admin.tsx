@@ -49,7 +49,7 @@ export function Admin() {
             </div>
 
             <div className="user_count">Total Users: {users.length}</div>
-            <button className="btn btn-secondary delete_button" onClick={onButtonClick}>Delete</button>
+            <button className="btn btn-secondary" onClick={onButtonClick}>Delete</button>
 
         </div>
     );
