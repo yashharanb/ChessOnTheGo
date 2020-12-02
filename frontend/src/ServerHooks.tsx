@@ -37,10 +37,10 @@ export interface AdminHookReturn{
     allUsers:User[];
 
     /**
-     * a function to call in order to delete a user, that has this id.
-     * @param id
+     * A function to call to delete multiple users.
+     * @param emails - The email of every user you want to delete.
      */
-    deleteUser:(id:number)=>void;
+    deleteUsers:(emails:string[])=>void;
 }
 
 /**
@@ -59,31 +59,40 @@ export function useAdminState(onError:ErrorFunc):AdminHookReturn{
         {username:"theadminlol",elo:1223,email:"admin@admin.com",isAdmin:true,state:"none",_id:1},
         {username:"kevin",elo:2390,email:"kevin@kevin.com",isAdmin:false,state:"game",_id:2},
         {username:"nicole",elo:876,email:"nicole@gmail.com",isAdmin:false,state:"game",_id:3},
-        {username:"yesha",elo:987,email:"nicole@gmail.com",isAdmin:false,state:"none",_id:4},
+        {username:"yesha",elo:987,email:"yesha@gmail.com",isAdmin:false,state:"none",_id:4},
         {username:"yashhhhharan",elo:790,email:"yashhhhhhhhharan@gmail.com",isAdmin:false,state:"queued",_id:5},
         {username:"krl",elo:888,email:"krl@gmail.com",isAdmin:false,state:"none",_id:6},
     ]);
 
-    const deleteUser=useCallback((id:number)=> {
-        const userToDelete=allUsers.find(user=>user._id===id);
-        if(typeof userToDelete==="undefined"){
-            throw new Error("error, could not find user to delete");
+    const deleteUsers=useCallback((emails:string[])=> {
+        const deletedEmailsSet=new Set(emails);
+        const allUsersToDelete=allUsers.filter(user=>deletedEmailsSet.has(user.email));
+
+        if(allUsersToDelete.length!==emails.length){
+            throw new Error("error, one or more inputted email did not belong to a known user");
         }
-        else if(userToDelete.isAdmin){
+        else if(allUsersToDelete.some(userToDelete=>userToDelete.isAdmin)){
             throw new Error("cannot delete an admin");
         }
-        else if (userToDelete.state!=="none"){
-            throw new Error(`error, can only delete users who state is none, user state was ${userToDelete.state}`);
+        else if (allUsersToDelete.some(userToDelete=>userToDelete.state!=="none")){
+            throw new Error("error, can only delete users who state is none");
         }
         else{
-            setAllUsers(allUsers.filter(user=>user._id!==id));
+            // const deletedIds=allUsersToDelete.map(user=>user._id);
+            setAllUsers(allUsers.map(user=>{
+                if(deletedEmailsSet.has(user.email)){
+                    return {...user, state:"deleted"};
+                }
+                else{
+                    return user;
+                }
+            }));
         }
     },[allUsers]);
 
-    const allUsersWithoutDeleted=useMemo(()=>allUsers.filter(user=>user.state!=="deleted"),
-        [allUsers])
+    const allUsersWithoutDeleted=useMemo(()=>allUsers.filter(user=>user.state!=="deleted"), [allUsers])
 
-    return {thisUser,allUsers:allUsersWithoutDeleted,deleteUser}
+    return {thisUser,allUsers:allUsersWithoutDeleted,deleteUsers}
 }
 
 export interface GameState{
@@ -93,31 +102,61 @@ export interface GameState{
 
 export type ChessCoordinate=`${'a'|'b'|'c'|'d'|'e'|'f'|'g'|'h'}${'1'|'2'|'3'|'4'|'5'|'6'|'7'|'8'}`;
 
-// interface ChessPlayerHookReturn{
-//     /**
-//      * The state of the chess player.
-//      * Ie users username, state,etc.
-//      *
-//      * Is null when initially loading in value.
-//      */
-//     thisUser:User|null;
-//     /** The state of the game the chess player is currently playing. Is null when not playing a game */
-//     currentGame:GameState|null;
-//     /** A function to call when the user wants to queue for a game.*/
-//     queueForGame:()=>void;
-//
-//     /**
-//      * A function to call when the user makes a move in the game they are in. Will throw an error if it is called when not in a game
-//      */
-//     makeMove:(move:ChessMove)=>void
-//
-// }
+/**
+ * Any valid chess move. Simply get the value from chess.jsx for  the attributes to, from and piece.
+ *
+ * Note that you need to handle upgrading the pawn yourself, before you call the makeMove function.
+ */
+export interface ChessMove{
+    /** square move is from. Gotten from chess.jsx */
+    from: string;
+    /** square move is to. Gotten from chess.jsx */
+    to: string;
+    /** If the move is a pawn moving into the final square, what peice the pawn will be promoted to*/
+    promotion?: string;
+    /** piece the move is moving. Gotten from chess.jsx */
+    piece: string;
+}
 
-// /**
-//  * A hook for a regular user to connect to socket.io. It manages all socket.io state for you.
-//  *
-//  * @param onError - a function to be called whenever there is an error on the server.
-//  */
+interface ChessPlayerHookReturn{
+    /**
+     * The state of the chess player.
+     * Ie users username, state,etc.
+     *
+     * Is null when initially loading in value.
+     */
+    thisUser:User|null;
+    /** The state of the game the chess player is currently playing. Is null when not playing a game */
+    currentGame:GameState|null;
+    /** A function to call when the user wants to queue for a game.*/
+    queueForGame:()=>void;
+
+    /**
+     * A function to call when the user makes a move in the game they are in.
+     * Will throw an error if it is called when not in a game
+     *
+     *
+     * Note, in the case you are promoting a pawn, you need to state what you are promoting it to before you call this function.
+     *
+     */
+    makeMove:(move:ChessMove)=>void
+
+}
+
+/**
+ * A hook for a regular user to connect to socket.io. It manages all socket.io state for you.
+ *
+ * @param onError - a function to be called whenever there is an error on the server.
+ */
 // export function useChessPlayerState(onError:ErrorFunc):ChessPlayerHookReturn{
+//     const makeMove=useCallback((move:ChessMove)=>{
+//             if(move.to.endsWith("8")||move.to.endsWith("1")){
+//                 if(move.piece.toUpperCase().endsWith("P")&&typeof move.promotion==="undefined"){
+//                     throw new Error("error, the developer forgot to promote a pawn, before calling makeMove");
+//                 }
+//             }
+//
+//     },[])
+//
 //
 // }
