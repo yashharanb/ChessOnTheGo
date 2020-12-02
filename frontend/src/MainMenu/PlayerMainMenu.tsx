@@ -49,7 +49,7 @@ export function PlayerMainMenu() {
                 </div>
             </div>
         </div>
-    )
+    );
 
     //load the whole page
 

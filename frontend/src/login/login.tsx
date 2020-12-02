@@ -6,7 +6,6 @@ export function LoginPage(){
 
   const [validated] = useState(false);
   return (
-
     <form  noValidate={validated}>
       <div className = "logo">
         <p></p>
@@ -23,9 +22,7 @@ export function LoginPage(){
           <button type="submit" id="login" className="btn btn-secondary">Login</button>
           <p></p>
         </div>
-
         <Link className="btn btn-secondary" to="./registration">Create a new Accont</Link>
-
         </fieldset>
       </form>
     );
