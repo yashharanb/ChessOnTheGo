@@ -38,7 +38,7 @@ export function Admin() {
 
   return (
     <div className="admin">
-      <div className ="table_heading">Delete Accounts</div>
+      <div className="table_heading">Delete Accounts</div>
 
       <div className="ag-theme-alpine" style={{ width: '100%', height: '100%' }}>
         <AgGridReact onGridReady={onGridReady} domLayout={'autoHeight'} defaultColDef={{ resizable: true }} rowData={users} rowSelection="multiple">
@@ -48,6 +48,7 @@ export function Admin() {
         </AgGridReact>
       </div>
 
+      <div className="user_count">Total Users: {users.length}</div>
       <button className="btn btn-secondary delete_button" onClick={onButtonClick}>Delete</button>
 
     </div>
