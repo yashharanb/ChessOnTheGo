@@ -7,6 +7,7 @@ body, html {
 .App {
   text-align: center;
   height: 100%;
+  color: black;
 }
 
 .App-logo {
@@ -68,4 +69,24 @@ body, html {
 .chess-king {
   color: #d39c2f;
   margin-right: 3rem;
+}
+
+.admin {
+  height: 100%;
+  width: 100%;
+}
+
+.table_heading {
+  background-color: #ffe3ae;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 20px;
+}
+
+.ag-root, .ag-header, .ag-row{
+  background-color: #fff1d7 !important;
+}
+
+.ag-cell{
+  text-align: left;
 }
