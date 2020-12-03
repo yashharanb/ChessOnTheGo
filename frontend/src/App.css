@@ -68,7 +68,20 @@ body, html {
 
 .chess-king {
   color: #d39c2f;
+}
+
+.lead .chess-king {
   margin-right: 3rem;
+}
+
+.total_games .chess-king {
+  margin-right: 1rem;
+}
+
+.total_games {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 30px 0px;
 }
 
 .admin, .stats {
