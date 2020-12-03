@@ -5,7 +5,7 @@ import { Router, Route, Link } from 'react-router-dom';
 
 export function Header() {
   return (
-    <nav className="navbar navbar-inverse">
+    <nav className="navbar navbar-inverse p-3">
       <div className="container-fluid header-container">
         <div className="navbar-header">
           <a className="navbar-brand site-logo" href="#">

@@ -35,9 +35,12 @@ body, html {
   margin-right: 3rem;
 }
 
+.site-logo {
+  cursor: default;
+}
+
 .navbar {
   background-color: #A77A23;
-  height: 80px;
   padding-top: 5px;
   margin-bottom: 5em;
 
