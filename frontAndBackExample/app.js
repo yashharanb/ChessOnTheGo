@@ -54,11 +54,11 @@ app.use(function(req, res, next)
  });
   
 //Routes
-app.use('/', require('./routes/index'));		//main page
+app.use('/', require('./routes'));		//main page
 app.use('/users', require('./routes/users'));	//users page
 
 //Port that this will be run on
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8000;
 
 //Starts the server on specific port
 app.listen(PORT, console.log(`Server started on port ${PORT}`));

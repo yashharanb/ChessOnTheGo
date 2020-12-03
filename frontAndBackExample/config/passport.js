@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 //Load "User" model
-const User = require('../models/user');
+const {User} = require('../models/models');
 
 module.exports = function(passport)
 {
@@ -49,7 +49,6 @@ module.exports = function(passport)
 
 		Each subsequent request will not contain credentials, but rather the unique cookie that identifies the session. In order to support login sessions, Passport will serialize and deserialize user instances to and from the session.
 	*/
-	//passport.serializeUser(function(user, done) //just to keep it consistant with the rest of the code, remove "function" and use arrow function:
 	passport.serializeUser((user, done) =>
 	{
 		done(null, user.id);

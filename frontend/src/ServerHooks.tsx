@@ -4,8 +4,6 @@ import {useCallback, useMemo, useRef, useState} from "react";
  * A single user in the application. Both admins and non-admins are represented by this type.
  */
 export interface User{
-    /** A unique identifier for the user */
-    _id:number;
     /**
      * What state that particular user is in.
      * none means that the user is not in a game, nor is in queue for a game.
@@ -54,14 +52,14 @@ export type ErrorFunc=(error:Error)=>void;
  * @param onError - a function to be called whenever there is an error on the server.
  */
 export function useAdminState(onError:ErrorFunc):AdminHookReturn{
-    const [thisUser, setThisUser]=useState<User|null>({username:"theadminlol",elo:1223,email:"admin@admin.com",isAdmin:true,state:"none",_id:1});
+    const [thisUser, setThisUser]=useState<User|null>({username:"theadminlol",elo:1223,email:"admin@admin.com",isAdmin:true,state:"none"});
     const [allUsers, setAllUsers]=useState<User[]>([
-        {username:"theadminlol",elo:1223,email:"admin@admin.com",isAdmin:true,state:"none",_id:1},
-        {username:"kevin",elo:2390,email:"kevin@kevin.com",isAdmin:false,state:"game",_id:2},
-        {username:"nicole",elo:876,email:"nicole@gmail.com",isAdmin:false,state:"game",_id:3},
-        {username:"yesha",elo:987,email:"yesha@gmail.com",isAdmin:false,state:"none",_id:4},
-        {username:"yashhhhharan",elo:790,email:"yashhhhhhhhharan@gmail.com",isAdmin:false,state:"queued",_id:5},
-        {username:"krl",elo:888,email:"krl@gmail.com",isAdmin:false,state:"none",_id:6},
+        {username:"theadminlol",elo:1223,email:"admin@admin.com",isAdmin:true,state:"none"},
+        {username:"kevin",elo:2390,email:"kevin@kevin.com",isAdmin:false,state:"game"},
+        {username:"nicole",elo:876,email:"nicole@gmail.com",isAdmin:false,state:"game"},
+        {username:"yesha",elo:987,email:"yesha@gmail.com",isAdmin:false,state:"none"},
+        {username:"yashhhhharan",elo:790,email:"yashhhhhhhhharan@gmail.com",isAdmin:false,state:"queued"},
+        {username:"krl",elo:888,email:"krl@gmail.com",isAdmin:false,state:"none"},
     ]);
 
     const deleteUsers=useCallback((emails:string[])=> {
@@ -78,7 +76,6 @@ export function useAdminState(onError:ErrorFunc):AdminHookReturn{
             throw new Error("error, can only delete users who state is none");
         }
         else{
-            // const deletedIds=allUsersToDelete.map(user=>user._id);
             setAllUsers(allUsers.map(user=>{
                 if(deletedEmailsSet.has(user.email)){
                     return {...user, state:"deleted"};
@@ -212,7 +209,7 @@ interface ChessPlayerHookReturn{
 }
 
 function isPlayersTurn(game:GameState,user:User):boolean{
-    const isPlayerWhite=user._id === game.whitePlayer._id;
+    const isPlayerWhite=user.email === game.whitePlayer.email;
     const isMovingPlayerWhite=game.playerTurn==="white";
     return (!isPlayerWhite&&!isMovingPlayerWhite )||(isPlayerWhite&&isMovingPlayerWhite)
 }
@@ -223,7 +220,7 @@ function isPlayersTurn(game:GameState,user:User):boolean{
  * @param onError - a function to be called whenever there is an error on the server.
  */
 export function useChessPlayerState(onError:ErrorFunc):ChessPlayerHookReturn{
-    const [thisUser,setThisUser]=useState<User|null>({username:"kevin",elo:2390,email:"kevin@kevin.com",isAdmin:false,state:"none",_id:2})
+    const [thisUser,setThisUser]=useState<User|null>({username:"kevin",elo:2390,email:"kevin@kevin.com",isAdmin:false,state:"none"})
     const [gameState,setGameState]=useState<GameState|null>(null);
     const timeoutRef=useRef<any>(null);
     const queueForGame=useCallback((timeLimit:number)=>{
@@ -237,8 +234,8 @@ export function useChessPlayerState(onError:ErrorFunc):ChessPlayerHookReturn{
                 const newGame:GameState={
                     whiteRemainingTimeMs:timeLimit,
                     blackRemainingTimeMs:timeLimit,
-                    blackPlayer:{username:"kevin",elo:2390,email:"kevin@kevin.com",isAdmin:false,state:"game",_id:2},
-                    whitePlayer:{username:"nicole",elo:876,email:"nicole@gmail.com",isAdmin:false,state:"game",_id:3},
+                    blackPlayer:{username:"kevin",elo:2390,email:"kevin@kevin.com",isAdmin:false,state:"game"},
+                    whitePlayer:{username:"nicole",elo:876,email:"nicole@gmail.com",isAdmin:false,state:"game"},
                     fenString:"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
                     inCheck:false,
                     playerTurn:"white",
@@ -251,8 +248,8 @@ export function useChessPlayerState(onError:ErrorFunc):ChessPlayerHookReturn{
             const afterManyMoves:GameState={
                 whiteRemainingTimeMs:30000,
                 blackRemainingTimeMs:10000,
-                blackPlayer:{username:"kevin",elo:2390,email:"kevin@kevin.com",isAdmin:false,state:"game",_id:2},
-                whitePlayer:{username:"nicole",elo:876,email:"nicole@gmail.com",isAdmin:false,state:"game",_id:3},
+                blackPlayer:{username:"kevin",elo:2390,email:"kevin@kevin.com",isAdmin:false,state:"game"},
+                whitePlayer:{username:"nicole",elo:876,email:"nicole@gmail.com",isAdmin:false,state:"game"},
                 fenString:"rn1qkbnr/ppp1pppp/7P/P7/8/1b6/1PpPPPP1/RNBQKBNR b KQkq - 0 7",
                 inCheck:false,
                 playerTurn:"black",
@@ -265,8 +262,8 @@ export function useChessPlayerState(onError:ErrorFunc):ChessPlayerHookReturn{
             const afterTimeLimitUp:GameState={
                 whiteRemainingTimeMs:30000,
                 blackRemainingTimeMs:0,
-                blackPlayer:{username:"kevin",elo:2390,email:"kevin@kevin.com",isAdmin:false,state:"game",_id:2},
-                whitePlayer:{username:"nicole",elo:876,email:"nicole@gmail.com",isAdmin:false,state:"game",_id:3},
+                blackPlayer:{username:"kevin",elo:2390,email:"kevin@kevin.com",isAdmin:false,state:"game"},
+                whitePlayer:{username:"nicole",elo:876,email:"nicole@gmail.com",isAdmin:false,state:"game"},
                 fenString:"rn1qkbnr/ppp1pppp/7P/P7/8/1b6/1PpPPPP1/RNBQKBNR b KQkq - 0 7",
                 inCheck:false,
                 playerTurn:"black",
@@ -310,8 +307,8 @@ export function useChessPlayerState(onError:ErrorFunc):ChessPlayerHookReturn{
                 const wonGame:GameState={
                     whiteRemainingTimeMs:30000,
                     blackRemainingTimeMs:4000,
-                    blackPlayer:{username:"kevin",elo:2390,email:"kevin@kevin.com",isAdmin:false,state:"game",_id:2},
-                    whitePlayer:{username:"nicole",elo:876,email:"nicole@gmail.com",isAdmin:false,state:"game",_id:3},
+                    blackPlayer:{username:"kevin",elo:2390,email:"kevin@kevin.com",isAdmin:false,state:"game"},
+                    whitePlayer:{username:"nicole",elo:876,email:"nicole@gmail.com",isAdmin:false,state:"game"},
                     fenString:"rn1qkbnr/ppp1pppp/7P/P7/8/1b6/1P1PPPP1/RNBqKBNR w KQkq - 0 8",
                     inCheck:false,
                     playerTurn:"white",
