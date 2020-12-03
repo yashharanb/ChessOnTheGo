@@ -29,7 +29,7 @@ function App() {
     <Router>
       <div className="App">
         <Switch>
-          <Route path='/login' component={LoginPage} />
+          <Route path='/' exact component={LoginPage} />
           <Route path="/registration" component={RegisterPage} />
           <Fragment>
             <Header />
