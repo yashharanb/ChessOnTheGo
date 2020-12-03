@@ -7,6 +7,7 @@ body, html {
 .App {
   text-align: center;
   height: 100%;
+  color: black;
 }
 
 .card {
@@ -32,9 +33,55 @@ body, html {
 
 .chess-king {
   color: #d39c2f;
+}
+
+.lead .chess-king {
   margin-right: 3rem;
 }
 
+.total_games .chess-king {
+  margin-right: 1rem;
+}
+
+.total_games {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 30px 0px;
+}
+
+.admin, .stats {
+  height: 100%;
+  width: 100%;
+}
+
+.table_heading {
+  background-color: #ffe3ae;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 20px;
+}
+
+.user_count {
+  text-align: left;
+  font-weight: bold;
+  margin: 10px;
+}
+
+.ag-header, .ag-row{
+  background-color: #fff1d7 !important;
+}
+
+.ag-cell{
+  text-align: left;
+}
+
+.stats_grid .ag-focus-managed {
+  background-color: #A77A23;
+}
+
+.stats_grid .ag-row-odd {
+  background-color: #ffe3ae !important;
+}
 .site-logo {
   cursor: default;
 }
@@ -42,8 +89,6 @@ body, html {
 .navbar {
   background-color: #A77A23;
   padding-top: 5px;
-  margin-bottom: 5em;
-
 }
 .navbar-brand {
   margin: 0;
@@ -77,4 +122,12 @@ body, html {
   .img-responsive {
     content: url('./mobile-logo.png');
   }
+}
+
+.player_menu {
+  margin-top: 5em;
+}
+
+.banner {
+  margin-top: 2em;
 }
