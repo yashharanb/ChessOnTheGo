@@ -8,7 +8,7 @@ const UserSchema = new mongoose.Schema(
 	isAdmin: {type: Boolean, default: false},
 	elo: {type: Intl, default: 500},
 	dateRegistered: {type: Date, default: Date.now},
-	sate:{type:String}
+	state:{type:String}
 },
 {	//if no colection is specified, then the default is Users
 	collection: 'Users'
