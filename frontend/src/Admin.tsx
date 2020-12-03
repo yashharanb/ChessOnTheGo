@@ -12,6 +12,7 @@ export function Admin() {
     function onGridReady(params: { api: any; columnApi: any; }) {
         setGridApi(params.api);
         setGridColumnApi(params.columnApi);
+        params.api.sizeColumnsToFit();
     }
 
     const onButtonClick = (e: any) => {
@@ -24,7 +25,6 @@ export function Admin() {
             const selectedDataStringPresentation = selectedData.map((node: { username: string; email: string; }) => node.username + ' ' + node.email).join(', ');
             alert(`Selected nodes: ${selectedDataStringPresentation}`);
         }
-
     }
 
     const users = [
@@ -42,9 +42,9 @@ export function Admin() {
 
             <div className="ag-theme-alpine" style={{ width: '100%', height: '100%' }}>
                 <AgGridReact onGridReady={onGridReady} domLayout={'autoHeight'} defaultColDef={{ resizable: true }} rowData={users} rowSelection="multiple">
-                    <AgGridColumn field="delete" checkboxSelection={true}></AgGridColumn>
-                    <AgGridColumn field="username"></AgGridColumn>
-                    <AgGridColumn field="email" flex={1}></AgGridColumn>
+                    <AgGridColumn field="delete" maxWidth={150} checkboxSelection={true}></AgGridColumn>
+                    <AgGridColumn field="username" maxWidth={300}></AgGridColumn>
+                    <AgGridColumn field="email"></AgGridColumn>
                 </AgGridReact>
             </div>
 

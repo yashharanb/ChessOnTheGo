@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { AgGridColumn, AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
@@ -7,6 +7,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import banner from './images/playerStats.png';
 
 export function PlayerStatistics() {
+    const [gridApi, setGridApi] = useState(Object);
+    const [gridColumnApi, setGridColumnApi] = useState(Object);
+
+    function onGridReady(params: { api: any; columnApi: any; }) {
+        setGridApi(params.api);
+        setGridColumnApi(params.columnApi);
+        params.api.sizeColumnsToFit();
+    }
+
     const stats = [
         { opponent: "Player 1", status: "Won", timestamp: "11/19/2020 18:47", duration: "18:42" },
         { opponent: "Player 2", status: "Lost", timestamp: "11/12/2020 17:26", duration: "11:59" },
@@ -23,11 +32,11 @@ export function PlayerStatistics() {
                 <div className="row">
                     <div className="col">
                         <div className="ag-theme-alpine" style={{ width: '100%', height: '100%' }}>
-                            <AgGridReact domLayout={'autoHeight'} defaultColDef={{ resizable: true }} rowData={stats}>
-                                <AgGridColumn field="opponent" flex={1}></AgGridColumn>
-                                <AgGridColumn field="status" flex={1}></AgGridColumn>
-                                <AgGridColumn field="timestamp" flex={1}></AgGridColumn>
-                                <AgGridColumn field="duration" flex={1}></AgGridColumn>
+                            <AgGridReact onGridReady={onGridReady} domLayout={'autoHeight'} defaultColDef={{ resizable: true }} rowData={stats}>
+                                <AgGridColumn field="opponent"></AgGridColumn>
+                                <AgGridColumn field="status"></AgGridColumn>
+                                <AgGridColumn field="timestamp"></AgGridColumn>
+                                <AgGridColumn field="duration"></AgGridColumn>
                             </AgGridReact>
                         </div>
                     </div>
