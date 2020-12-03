@@ -15,6 +15,13 @@ const UserSchema = new mongoose.Schema(
 });
 
 const User = mongoose.model('User', UserSchema);
+const QueuedUserSchema=new Schema({
+
+})
+
+const QueuedUser="queue model"
+const HistoricalGame="historical game"
+const CurrentGame = "current game"
 
 
-module.exports = {User};
+module.exports={User,QueuedUser,CurrentGame, HistoricalGame}
