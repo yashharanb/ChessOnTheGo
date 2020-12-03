@@ -17,7 +17,7 @@ import {
 export function PlayerMainMenu() {
 
     return (
-        <div className="container">
+        <div className="container player_menu">
             <div className="row">
                 <div className="col">
                     <div className="jumbotron brown-border content-container">

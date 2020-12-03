@@ -25,7 +25,7 @@ export function PlayerStatistics() {
 
     return (
         <div className="stats">
-            <img src={banner} className="img-fluid" alt="Statistics" />
+            <img src={banner} className="img-fluid banner" alt="Statistics" />
             <div className="total_games"><FontAwesomeIcon icon="chess-king" className="chess-king fa-3x" />Games Played: {stats.length}</div>
 
             <div className="container">

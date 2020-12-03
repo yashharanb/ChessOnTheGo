@@ -89,8 +89,6 @@ body, html {
 .navbar {
   background-color: #A77A23;
   padding-top: 5px;
-  margin-bottom: 5em;
-
 }
 .navbar-brand {
   margin: 0;
@@ -124,4 +122,12 @@ body, html {
   .img-responsive {
     content: url('./mobile-logo.png');
   }
+}
+
+.player_menu {
+  margin-top: 5em;
+}
+
+.banner {
+  margin-top: 2em;
 }
