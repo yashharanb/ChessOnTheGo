@@ -31,7 +31,7 @@ export function PlayerStatistics() {
             <div className="container">
                 <div className="row">
                     <div className="col">
-                        <div className="ag-theme-alpine" style={{ width: '100%', height: '100%' }}>
+                        <div className="stats_grid ag-theme-alpine" style={{ width: '100%', height: '100%' }}>
                             <AgGridReact onGridReady={onGridReady} domLayout={'autoHeight'} defaultColDef={{ resizable: true }} rowData={stats}>
                                 <AgGridColumn field="opponent"></AgGridColumn>
                                 <AgGridColumn field="status"></AgGridColumn>

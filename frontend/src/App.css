@@ -102,10 +102,18 @@ body, html {
   margin: 10px;
 }
 
-.ag-root, .ag-header, .ag-row{
+.ag-header, .ag-row{
   background-color: #fff1d7 !important;
 }
 
 .ag-cell{
   text-align: left;
+}
+
+.stats_grid .ag-focus-managed {
+  background-color: #A77A23;
+}
+
+.stats_grid .ag-row-odd {
+  background-color: #ffe3ae !important;
 }
