@@ -5,6 +5,7 @@ import {Router, Route, Link} from 'react-router-dom';
 
 export function RegisterPage(){
   const [validated] = useState(false);
+  // Display the registration screen
   return (
     <form  noValidate={validated} >
       <div className = "logo">

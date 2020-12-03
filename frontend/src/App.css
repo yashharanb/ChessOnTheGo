@@ -64,3 +64,20 @@ body, html {
   color: #d39c2f;
   margin-right: 3rem;
 }
+
+[data-boardid="0"] > *{
+  width: 100% !important;
+  height: auto !important;
+}
+
+.chessBoard > *{
+  width: 100% !important;
+  height: auto !important;
+}
+
+.loseLogo{
+  width: 30%;
+  position: absolute;
+  top: 50%;
+  left: 80%;
+}

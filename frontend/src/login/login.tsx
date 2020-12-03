@@ -5,6 +5,7 @@ import {Router, Route, Link} from 'react-router-dom';
 export function LoginPage(){
 
   const [validated] = useState(false);
+  // Display the user login screen
   return (
     <form  noValidate={validated}>
       <div className = "logo">
