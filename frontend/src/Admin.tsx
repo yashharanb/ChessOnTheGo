@@ -26,7 +26,11 @@ export function Admin() {
         else {
             const selectedData = selectedNodes.map((node: { data: any; }) => node.data);
             const selectedDataEmails = selectedData.map((node: { email: string; }) => node.email);
-            deleteUsers(selectedDataEmails);
+            try {
+                deleteUsers(selectedDataEmails);
+            } catch(e){
+                alert(e.message);
+            }
         }
     }   
 
