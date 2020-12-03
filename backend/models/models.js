@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
+const {Schema, model} = require('mongoose');
 
-const UserSchema = new mongoose.Schema(
+const UserSchema = new Schema(
 {
 	email: {type: String, required: true},
 	username: {type: String, required: true},
@@ -14,7 +14,8 @@ const UserSchema = new mongoose.Schema(
 	collection: 'Users'
 });
 
-const User = mongoose.model('User', UserSchema);
+const User = model('User', UserSchema);
+
 const QueuedUserSchema=new Schema({
 
 })

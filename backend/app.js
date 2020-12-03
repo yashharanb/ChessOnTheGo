@@ -1,8 +1,8 @@
 //As Kevin wants me to use express:
 const express = require('express');
 const app = express();
-
-const io = require('socket.io')(app);
+const http = require('http').createServer(app);
+const io = require('socket.io')(http);
 
 //for the GUI using EJS in the views folder
 const expressLayouts = require('express-ejs-layouts');
