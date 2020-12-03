@@ -3,7 +3,8 @@ import '../App.css';
 import 'bootswatch/dist/slate/bootstrap.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-
+// Contains the display for the queue page.
+// Uses a spinning icon to display that the user is waiting in the queue.
 export function Queue() {
     return (
         <div>

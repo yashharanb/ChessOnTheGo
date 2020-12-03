@@ -12,8 +12,8 @@ import {
 
 
 
-
-// todo: replace the 4s with actual data from the db
+// This page displays the player's general game stats, and allows users to play a new game or view detailed stats.
+// TODO: replace the 4s with actual data from the db
 export function PlayerMainMenu() {
 
     return (
@@ -50,9 +50,4 @@ export function PlayerMainMenu() {
             </div>
         </div>
     )
-
-    //load the whole page
-
-    //if user click new game, load new game page (queueing page?)
-    // else if user click stats, go to stats page
 }
