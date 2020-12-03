@@ -19,11 +19,16 @@ import {
   withRouter
 } from "react-router-dom";
 
-
+// This allows Font Awesome icons to be called anywhere within the application.
+// To use an icon: add the icon name you want to this and in the import line, use a FontAwesomeIcon tag, and set the icon attribute to the font awesome name.
+// e.g. see Queue.tsx
 library.add(faChessKing, faSpinner);
 
 
 function App() {
+  // Switch is required when setting up routes, which allows the app to correctly navigate through different pages.
+  // Routes specify which component to display
+  // Fragment allows only certain pages to have a header component displayed.
   return (
     <Router>
       <div className="App">
