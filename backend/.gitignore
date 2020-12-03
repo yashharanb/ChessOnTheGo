@@ -1,4 +1,5 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+.env
 
 # dependencies
 /node_modules
@@ -13,7 +14,6 @@
 
 # misc
 .DS_Store
-.env
 .env.local
 .env.development.local
 .env.test.local
@@ -436,11 +436,8 @@ tags
 
 # MongoDB
 .DS_Store
-backend/.env
-.env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
-backend/makeEnv.bat
-backend/makeEnv.txt
+
