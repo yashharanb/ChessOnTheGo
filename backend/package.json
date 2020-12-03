@@ -1,15 +1,19 @@
 {
-	"name": "MobileChessGame",
-	"version": "0.0.1",
-	"description": "Chess on the Run",
-	"scripts": {
-		"start": "node server.js",
-		"dev": "nodemon server.js"
-	},
-	"dependencies": {
-		"dotenv": "^8.2.0",
-		"express": "^4.17.1",
-		"mongoose": "^5.10.15",
-		"nodemon": "^2.0.6"
-	}
+  "name": "chess_on_the_go_backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^5.10.16",
+    "socket.io": "^3.0.3",
+    "dotenv": "^8.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.6"
+  }
 }

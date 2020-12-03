@@ -30,7 +30,7 @@ export function RegisterPage(){
         <div className="container" style={{width:"40%"}}>
         <div className="row"  >
             <div className="col " >
-              <Link className="btn btn-secondary " to="./login" >Go to Login</Link>
+              <Link className="btn btn-secondary " to="/" >Go to Login</Link>
             </div>
             <div className="col"  >
               <button type="submit"  id="registration" className="btn btn-secondary ">Register</button>
