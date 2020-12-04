@@ -23,7 +23,9 @@ export function LoginPage(){
           <button type="submit" id="login" className="btn btn-secondary">Login</button>
           <p></p>
         </div>
-        <Link className="btn btn-secondary" to="./registration">Create a new Accont</Link>
+
+        <Link className="btn btn-secondary" to="./registration">Create a new Account</Link>
+
         </fieldset>
       </form>
     );

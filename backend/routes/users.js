@@ -3,7 +3,7 @@ const router = express.Router();
 
 //for passing stuff to and from the database
 require("dotenv/config");
-const newUserRegistration = require('../models/user');
+const {User} = require('../models/models');
 const bcrypt = require('bcryptjs'); //used to encrypt the password by hashing it
 
 //for login page at http://localhost:3000/users/login
@@ -54,7 +54,7 @@ router.post('/registration', (req, res) =>
 		console.log('Input seems to be ok will now check if email and username is already in the Users db'); //for debugging
 
 		//Search Users db to see if there is already an account that has the same email or username that the user has put in the registration form
-		newUserRegistration.findOne({$or:[{email: email}, {username: username}]}).then(user =>
+		User.findOne({$or:[{email: email}, {username: username}]}).then(user =>
 		{
 			if(user) //if a reuslt is returned (meaning user != null), then something is already in the Users db, so check for which one
 			{
@@ -77,7 +77,7 @@ router.post('/registration', (req, res) =>
 			{
 				//Create new user in the database
 				console.log("Adding new registration info to Users db");
-				const newUser = new newUserRegistration({username, email, password});
+				const newUser = new User({username, email, password});
 				console.log(newUser); //for debugging
 
 				//Hash the plain text password (found by using newUser.password) for security before sending it to the DB

@@ -19,7 +19,7 @@ export function Header() {
           </li>
 
           <li className="active d-inline-block">
-            <Link className="btn btn-outline-light btn-logout d-inline-block" to="./login">Logout</Link>
+            <Link className="btn btn-outline-light btn-logout d-inline-block" to="./">Logout</Link>
           </li>
 
         </ul>

@@ -7,6 +7,7 @@ import { Queue } from './Queue/Queue';
 import { RegisterPage } from './login/registration';
 import { PlayerMainMenu } from './MainMenu/PlayerMainMenu';
 import { PlayerStatistics } from "./PlayerStatistics";
+import { Admin } from './Admin';
 import { Header } from './header';
 import {Game} from './MainMenu/Game'
 import { GameWon } from './MainMenu/GameWon';
@@ -46,7 +47,8 @@ function App() {
           <div className="App d-flex justify-content-center h-100 align-middle">
             <Route path='/menu' component={PlayerMainMenu}/>
             <Route path='/queue' component={Queue} />
-            <Route path='/PlayerStatistics' component={PlayerStatistics}/>
+            <Route path='/playerstats' component={PlayerStatistics} />
+            <Route path='/admin' component={Admin} />
             <Route path='/Game' component={Game}/>
             <Route path='/GameWon' component={GameWon}/>
             <Route path='/GameLost' component={GameLost}/>

@@ -16,6 +16,9 @@
     "@types/react-dom": "^16.9.10",
     "@types/react-router-dom": "^5.1.6",
     "beautiful-react-hooks": "^0.31.0",
+
+    "ag-grid-community": "^24.1.0",
+    "ag-grid-react": "^24.1.1",
     "bootswatch": "^4.5.3",
     "chessboardjsx": "^2.4.2",
     "react": "^17.0.1",
