@@ -87,13 +87,13 @@ export function useAdminState(onError:ErrorFunc):AdminHookReturn{
         const allUsersToDelete=allUsers.filter(user=>deletedEmailsSet.has(user.email));
 
         if(allUsersToDelete.length!==emails.length){
-            throw new Error("error, one or more inputted email did not belong to a known user");
+            throw new Error("The email address you selected does not belong to a registered user.");
         }
         else if(allUsersToDelete.some(userToDelete=>userToDelete.isAdmin)){
-            throw new Error("cannot delete an admin");
+            throw new Error("You can't delete an admin user.");
         }
         else if (allUsersToDelete.some(userToDelete=>userToDelete.state!=="none")){
-            throw new Error("error, can only delete users who state is none");
+            throw new Error("You can't delete users who are currently queued or playing a game.");
         }
         else{
             sendIoMessage(connectionRef.current,"delete_users",JSON.stringify(emails))
