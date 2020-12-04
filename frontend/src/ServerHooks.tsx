@@ -65,20 +65,13 @@ function sendIoMessage(conn:Socket|null,eventName:string,msg:string){
 export function useAdminState(onError:ErrorFunc):AdminHookReturn{
     const connectionRef=useRef<Socket|null>(null);
 
-    const [thisUser, setThisUser]=useState<User|null>({username:"theadminlol",elo:1223,email:"admin@admin.com",isAdmin:true,state:"none"});
-    const [allUsers, setAllUsers]=useState<User[]>([
-        {username:"theadminlol",elo:1223,email:"admin@admin.com",isAdmin:true,state:"none"},
-        {username:"kevin",elo:2390,email:"kevin@kevin.com",isAdmin:false,state:"game"},
-        {username:"nicole",elo:876,email:"nicole@gmail.com",isAdmin:false,state:"game"},
-        {username:"yesha",elo:987,email:"yesha@gmail.com",isAdmin:false,state:"none"},
-        {username:"yashhhhharan",elo:790,email:"yashhhhhhhhharan@gmail.com",isAdmin:false,state:"queued"},
-        {username:"krl",elo:888,email:"krl@gmail.com",isAdmin:false,state:"none"},
-    ]);
+    const [thisUser, setThisUser]=useState<User|null>(null);
+    const [allUsers, setAllUsers]=useState<User[]>([]);
     useEffect(()=>{
         const connection=io().connect();
         connection.on("user",(msg:string)=>setThisUser(JSON.parse(msg)));
         connection.on("users",(msg:string)=>setAllUsers(JSON.parse(msg)));
-        connection.on("input_error",(error:string)=>{onError(new Error(error));})
+        connection.on("input_error",(error:string)=>onError(new Error(error)))
         connectionRef.current=connection;
     },[onError])
 
