@@ -1,8 +1,8 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {BrowserRouter as Router,Switch, Route,Link} from "react-router-dom";
-import winningBanner from './winningBanner.png';
-import celebration from './celebrate.svg';
+import winningBanner from '../images/winningBanner.png';
+import celebration from '../images/celebrate.svg';
 
 export function GameWon() {
   // Display the statistics of the player when they win a game
@@ -15,7 +15,7 @@ export function GameWon() {
         <img src={celebration} className="img-fluid" alt="winIcon"  />
       </div>
 
-        <div className="row" style={{width:"50%",display: "inline-block"}}>
+        <div className="row" style={{width:"50%"}}>
             <div className="col" >
                 <div className="border border-dark content-container bg-white text-dark" >
                     <p className="lead">

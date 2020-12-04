@@ -1,7 +1,7 @@
 import React from 'react';
 import ChessBoard from 'chessboardjsx';
 import { useWindowResize } from "beautiful-react-hooks";
-import timer from './timer.png';
+import timer from '../images/timer.png';
 
 const { useState } = React;
 export function Game() {

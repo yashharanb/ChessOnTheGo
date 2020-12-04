@@ -112,20 +112,17 @@ body, html {
 }
 
 #typehead{
-  width: 35%;
+  width: 33%;
 
 }
 
-[data-boardid="0"]{
+[data-boardid="0"]::after, ::before{
   padding: 0 !important;
   width: 100% !important;
   height: auto !important;
-  box-sizing: unset !important;
-}
-
-*, ::after, ::before{
   box-sizing: revert !important;
 }
+
 
 
 @media screen and (max-width: 600px) {
@@ -141,7 +138,15 @@ body, html {
   }
   #typehead{
     width: 100%;
+  }
 
+}
+
+@media screen and (max-width: 650px) {
+  .banner {
+    width: 40%;
+    height: 20%;
+    margin-top: 2em;
   }
 
 }
