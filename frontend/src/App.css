@@ -35,21 +35,15 @@ body, html {
   margin-right: 3rem;
 }
 
-[data-boardid="0"] > *{
-  width: 100% !important;
-  height: auto !important;
-}
 
-.chessBoard > *{
-  width: 100% !important;
-  height: auto !important;
-}
+
 
 .loseLogo{
   width: 30%;
   position: absolute;
   top: 50%;
   left: 80%;
+}
 
 .site-logo {
   cursor: default;
@@ -82,6 +76,23 @@ body, html {
   color: #ffff;
 }
 
+#typehead{
+  width: 35%;
+
+}
+
+[data-boardid="0"]{
+  padding: 0 !important;
+  width: 100% !important;
+  height: auto !important;
+  box-sizing: unset !important;
+}
+
+*, ::after, ::before{
+  box-sizing: revert !important;
+}
+
+
 @media screen and (max-width: 600px) {
   .header-container {
     padding-left: 0px !important;
@@ -92,6 +103,10 @@ body, html {
   }
   .img-responsive {
     content: url('./mobile-logo.png');
+  }
+  #typehead{
+    width: 100%;
+
   }
 
 }
