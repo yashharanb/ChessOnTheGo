@@ -1,4 +1,5 @@
-import {useCallback, useMemo, useRef, useState} from "react";
+import {useCallback, useEffect, useMemo, useRef, useState} from "react";
+import {io, Socket} from "socket.io-client";
 
 /***
  * A single user in the application. Both admins and non-admins are represented by this type.
@@ -46,21 +47,33 @@ export interface AdminHookReturn{
  */
 export type ErrorFunc=(error:Error)=>void;
 
+
+function sendIoMessage(conn:Socket|null,eventName:string,msg:string){
+    if(conn===null){
+        throw new Error("error, no connection to server");
+    }
+    else{
+        conn.emit(eventName,msg);
+    }
+}
+
 /**
  * A hook for the admin to connect to socket.io. I would expect this to only be used by the admin page.
  *
  * @param onError - a function to be called whenever there is an error on the server.
  */
 export function useAdminState(onError:ErrorFunc):AdminHookReturn{
-    const [thisUser, setThisUser]=useState<User|null>({username:"theadminlol",elo:1223,email:"admin@admin.com",isAdmin:true,state:"none"});
-    const [allUsers, setAllUsers]=useState<User[]>([
-        {username:"theadminlol",elo:1223,email:"admin@admin.com",isAdmin:true,state:"none"},
-        {username:"kevin",elo:2390,email:"kevin@kevin.com",isAdmin:false,state:"game"},
-        {username:"nicole",elo:876,email:"nicole@gmail.com",isAdmin:false,state:"game"},
-        {username:"yesha",elo:987,email:"yesha@gmail.com",isAdmin:false,state:"none"},
-        {username:"yashhhhharan",elo:790,email:"yashhhhhhhhharan@gmail.com",isAdmin:false,state:"queued"},
-        {username:"krl",elo:888,email:"krl@gmail.com",isAdmin:false,state:"none"},
-    ]);
+    const connectionRef=useRef<Socket|null>(null);
+
+    const [thisUser, setThisUser]=useState<User|null>(null);
+    const [allUsers, setAllUsers]=useState<User[]>([]);
+    useEffect(()=>{
+        const connection=io().connect();
+        connection.on("user",(msg:string)=>setThisUser(JSON.parse(msg)));
+        connection.on("users",(msg:string)=>setAllUsers(JSON.parse(msg)));
+        connection.on("input_error",(error:string)=>onError(new Error(error)))
+        connectionRef.current=connection;
+    },[onError])
 
     const deleteUsers=useCallback((emails:string[])=> {
         const deletedEmailsSet=new Set(emails);
@@ -76,14 +89,7 @@ export function useAdminState(onError:ErrorFunc):AdminHookReturn{
             throw new Error("You can't delete users who are currently queued or playing a game.");
         }
         else{
-            setAllUsers(allUsers.map(user=>{
-                if(deletedEmailsSet.has(user.email)){
-                    return {...user, state:"deleted"};
-                }
-                else{
-                    return user;
-                }
-            }));
+            sendIoMessage(connectionRef.current,"delete_users",JSON.stringify(emails))
         }
     },[allUsers]);
 
