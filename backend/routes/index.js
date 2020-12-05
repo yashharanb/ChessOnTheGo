@@ -5,7 +5,7 @@ const router = express.Router();
  const {ensureAuthenticated} = require('../config/authentication')
 
 
-//for homepage default with login
+//for homepage default with login where no auth is needed in order to access it
 //router.get('/', (req, res) => res.send('Welcome to Chess on the Go!'));
 router.get('/', (req, res) => res.render('welcome')); //rendering the welcome page using EJS
 
@@ -18,8 +18,11 @@ router.get('/dashboard', ensureAuthenticated, (req, res) => res.render('dashboar
 	username: req.user.username
 }));
 
-
-
+//rendering the adminDashboard page using EJS, PROTECTED and shows username!
+router.get('/adminDashboard', ensureAuthenticated, (req, res) => res.render('adminDashboard',
+{
+	username: req.user.username
+}));
 
 ensureAuthenticated
 module.exports = router;
