@@ -114,7 +114,8 @@ function users(refreshUsers) {
 		console.log("Router post isAdmin: " + req.user.isAdmin)
 		if (req.user.isAdmin == true)
 		{
-			res.redirect('/adminDashboard');
+			//res.redirect('/adminDashboard');
+			res.redirect('/admin.html');
 		}
 		if (req.user.isAdmin == false)
 		{
