@@ -1,6 +1,6 @@
-//Prevents unverified users for accessing past resitration or login page
+//This middleware prevents unverified users for accessing past registration or login page
 //Uses passportjs for this
-//this needs to be added to any route in inex.js in the routes folder to protect any route
+//this needs to be added to any route in index.js in the routes folder to protect any route
 module.exports = {
 	ensureAuthenticated: function(req, res, next)
 	{
