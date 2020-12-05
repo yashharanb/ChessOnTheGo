@@ -114,7 +114,8 @@ function users(refreshUsers) {
 		console.log("Router post isAdmin: " + req.user.isAdmin)
 		if (req.user.isAdmin == true)
 		{
-			res.redirect('/admin.tsx');
+			//res.redirect('/admin.tsx'); //whichever one works when we do the build
+			res.redirect('/admin.html');  //for now as just a place holder for testing to show that the routing works
 		}
 		if (req.user.isAdmin == false)
 		{
