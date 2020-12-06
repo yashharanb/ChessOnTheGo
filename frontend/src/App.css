@@ -103,13 +103,27 @@ body, html {
   color: #ffff;
 }
 .img-responsive {
-  height: 50px; 
+  height: 50px;
   padding-right: 15px;
   padding-left: 5px;
 }
 .btn-logout {
   color: #ffff;
 }
+
+#typehead{
+  width: 33%;
+
+}
+
+[data-boardid="0"]::after, ::before{
+  padding: 0 !important;
+  width: 100% !important;
+  height: auto !important;
+  box-sizing: revert !important;
+}
+
+
 
 @media screen and (max-width: 600px) {
   .header-container {
@@ -122,6 +136,19 @@ body, html {
   .img-responsive {
     content: url('./mobile-logo.png');
   }
+  #typehead{
+    width: 100%;
+  }
+
+}
+
+@media screen and (max-width: 650px) {
+  .banner {
+    width: 40%;
+    height: 20%;
+    margin-top: 2em;
+  }
+
 }
 
 .player_menu {

@@ -45,7 +45,7 @@ export function PlayerMainMenu() {
                     <Link className="btn btn-secondary" to="../Game">New Game</Link>
                 </div>
                 <div className="col">
-                    <Link className="btn btn-secondary" to="../PlayerStatistics">Player Stats</Link>
+                    <Link className="btn btn-secondary" to="../playerstats">Player Stats</Link>
                 </div>
             </div>
         </div>
