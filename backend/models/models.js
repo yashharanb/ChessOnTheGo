@@ -35,15 +35,14 @@ const HistoricalGameSchema=new Schema({
 const HistoricalGame=model("HistoricalGame",HistoricalGameSchema);
 const CurrentGameSchema=new Schema({
 	queueStartTime : {type: Date, default: Date.now, immutable:true},
-	whitePlayer: {type: Schema.Types.ObjectId, ref: 'User',immutable:true,unique:true},
-	blackPlayer :{type: Schema.Types.ObjectId, ref: 'User',immutable:true,unique:true},
-	startTime:{type:Date,required:true,immutable:true,default:null},
+	whitePlayer: {type: Schema.Types.ObjectId, ref: 'User',immutable:true,unique:true,required:true},
+	blackPlayer :{type: Schema.Types.ObjectId, ref: 'User',unique:true},
+	startTime:{type:Date,required:true,default:null},
 	timeLimit:{type:Number,required:true,immutable:true},
 	pgn:{type:String,required:true},
 	whitePlayerTimeRemaining:{type:Number,required:true},
 	blackPlayerTimeRemaining:{type:Number,required:true},
-	whitePlayerLastMoveTime:{type:Date,default:null,required:true},
-	blackPlayerLastMoveTime:{type:Date,default:null,required:true}
+	movingPlayerTurnStartTime:{type:Date,default:null},
 },{ safe:true, validateBeforeSave:true,writeConcern});
 
 const CurrentGame = model("CurrentGame",CurrentGameSchema);

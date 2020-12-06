@@ -82,7 +82,7 @@ function streams(io){
      * @param {CurrentGame} populatedGameModel
      */
     function getGameState(chess,populatedGameModel){
-        const {whiteRemainingTimeMs, blackRemainingTimeMs,whitePlayer,blackPlayer,whitePlayerLastMoveTime,blackPlayerLastMoveTime}=gameModel;
+        const {whiteRemainingTimeMs, blackRemainingTimeMs,whitePlayer,blackPlayer,movingPlayerTurnStartTime}=populatedGameModel;
         const playerTurn=chess.turn() === "w" ? "white":"black";
         const possibleMoves=chess.moves({verbose:true});
         const fenString=chess.fen();
@@ -144,9 +144,13 @@ function streams(io){
             inCheck,
             winLoss:winLoss,
             history,
-            whitePlayerLastMoveTime,
-            blackPlayerLastMoveTime,
+            movingPlayerTurnStartTime,
         }
+    }
+
+    async function matchmakeGame(user) {
+        //todo find game within elo range
+        return null
     }
 
     /***
@@ -167,12 +171,24 @@ function streams(io){
                 }
                 socket.join(getGameRoom(userGame));
             }
-            const user=await User.findOne({"_id":usrKey})
+            else{
+                const user=await User.findOne({"_id":usrKey});
+                const gameToFind=await matchmakeGame(user);
+                if(gameToFind === null){
 
-            //todo find game within elo range
-
-            //todo add game to queue.
-
+                    const newGame=await CurrentGame({
+                        queueStartTime : new Date(),
+                        whitePlayer: user,
+                        blackPlayer :null,
+                        startTime:new Date(),
+                        timeLimit:timeLimitMs,
+                        pgn:"",
+                        whitePlayerTimeRemaining:timeLimitMs,
+                        blackPlayerTimeRemaining:timeLimitMs,
+                    }).save()
+                    console.log(newGame.id)
+                }
+            }
         })
 
         socket.on("make_move",move=>{
