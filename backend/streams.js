@@ -81,14 +81,14 @@ function streams(io){
      * @param {ChessInstance} chess
      * @param {CurrentGame} populatedGameModel
      */
-    function getGameState(chess,populatedGameModel,timeoutPlayer){
+    function getGameState(chess,populatedGameModel){
         const {whiteRemainingTimeMs, blackRemainingTimeMs,whitePlayer,blackPlayer,whitePlayerLastMoveTime,blackPlayerLastMoveTime}=gameModel;
-        const playerTurn=chess.turn() === "w" ? "white":"black"
+        const playerTurn=chess.turn() === "w" ? "white":"black";
         const possibleMoves=chess.moves({verbose:true});
         const fenString=chess.fen();
         const inCheck=chess.in_check();
         const history=chess.history({verbose:true});
-        let winLoss=null
+        let winLoss=null;
         const whitePlayerOutOfTime=whiteRemainingTimeMs===0;
         const blackPlayerOutOfTime=blackRemainingTimeMs===0;
         const gameOver=chess.game_over();
@@ -97,23 +97,44 @@ function streams(io){
             const isCheckmate=chess.in_checkmate();
             const isWinOrLoss=whitePlayerOutOfTime||blackPlayerOutOfTime||isCheckmate;
             const gameOverState=isWinOrLoss ? "winLoss":"draw";
+            let winner,reason;
             if(isWinOrLoss){
-
+                if(whitePlayerOutOfTime){
+                    winner="black";
+                    reason="timeout";
+                }
+                else if (blackPlayerOutOfTime){
+                    winner="white";
+                    reason="timeout";
+                }
+                else{
+                    winner=chess.turn() === "w"?"black":"white";
+                    reason="checkmate";
+                }
             }
-            // else{
-            //     //this is for the 50 move rule.
-            //     // for some reason, this is the only way to determine if the 50 move rule is a thing.
-            //     if(inDraw)
-            //
-            //
-            //         }
-            // if(chess.in_draw()){
-            // }
-            // else if(chess.in)
-
+            else if (inDraw){
+                winner=null;
+                if(chess.insufficient_material()){
+                    reason="insufficient-material";
+                }
+                else if(chess.in_stalemate()){
+                    reason="stalemate";
+                }
+                else if(chess.in_threefold_repetition()){
+                    reason="threefold-repetition";
+                }
+                else{
+                    reason="50-move";
+                }
+            }
+            else{
+                throw new Error("internal bug to chess.js, somehow game-over but not drawn or in won state");
+            }
+            winLoss={gameOverState,reason,winner};
         }
 
-        return {    whiteRemainingTimeMs,
+        return {
+            whiteRemainingTimeMs,
             blackRemainingTimeMs,
             playerTurn,
             whitePlayer,
@@ -139,24 +160,24 @@ function streams(io){
         socket.on("play_game", async (timeLimitMs)=>{
             const userGame=await CurrentGame.findOne({$or: [{whitePlayer: usrKey}, {blackPlayer: usrKey}]})
                 .populate("whitePlayer").populate("blackPlayer");
-            if(userGame!==null&&userGame.blackPlayer){
-                const gameState=getGameState(getChessJsObjectFromGame(userGame),userGame);
-                socket.emit("game",JSON.stringify(gameState));
-                socket.join(getGameRoom(userGame))
+            if(userGame!==null){
+                if(userGame.blackPlayer) {
+                    const gameState=getGameState(getChessJsObjectFromGame(userGame),userGame);
+                    socket.emit("game",JSON.stringify(gameState));
+                }
+                socket.join(getGameRoom(userGame));
             }
             const user=await User.findOne({"_id":usrKey})
-            //when game found:
-            makeMoveListener=()=>{
 
+            //todo find game within elo range
 
-                // fires to 'game' client event, for all clients listening to this particular game.
-                // Make a single move on client
-            };
+            //todo add game to queue.
 
-            // kevin
         })
 
         socket.on("make_move",move=>{
+            // fires to 'game' client event, for all clients listening to this particular game.
+            // Make a single move on client
 
         })
     }
