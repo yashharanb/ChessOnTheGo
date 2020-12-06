@@ -165,6 +165,17 @@ export interface GameState{
     inCheck:boolean;
     winLoss:GameWinLossState|GameDraw|null;
     history:ChessMove[];
+    /**
+     * The time that the player who's turn it is to move time started.
+     * This is so that the time on the server and client are synchronized properly
+     *
+     * The way you should use this, is for the timer.
+     * The timer for the moving player should always display:
+     *
+     * Math.round((playerRemainingTimeMs - (new Date(currentTime) - new Date(movingPlayerStartTime)))*1000)
+     *
+     */
+    movingPlayerTurnStartTime:DateTimeStr;
 }
 
 
@@ -247,37 +258,45 @@ export function useChessPlayerState(onError:ErrorFunc):ChessPlayerHookReturn{
                     playerTurn:"white",
                     possibleMoves:[{"color":"w","from":"a2","to":"a3","flags":"n","piece":"p","san":"a3"},{"color":"w","from":"a2","to":"a4","flags":"b","piece":"p","san":"a4"},{"color":"w","from":"b2","to":"b3","flags":"n","piece":"p","san":"b3"},{"color":"w","from":"b2","to":"b4","flags":"b","piece":"p","san":"b4"},{"color":"w","from":"c2","to":"c3","flags":"n","piece":"p","san":"c3"},{"color":"w","from":"c2","to":"c4","flags":"b","piece":"p","san":"c4"},{"color":"w","from":"d2","to":"d3","flags":"n","piece":"p","san":"d3"},{"color":"w","from":"d2","to":"d4","flags":"b","piece":"p","san":"d4"},{"color":"w","from":"e2","to":"e3","flags":"n","piece":"p","san":"e3"},{"color":"w","from":"e2","to":"e4","flags":"b","piece":"p","san":"e4"},{"color":"w","from":"f2","to":"f3","flags":"n","piece":"p","san":"f3"},{"color":"w","from":"f2","to":"f4","flags":"b","piece":"p","san":"f4"},{"color":"w","from":"g2","to":"g3","flags":"n","piece":"p","san":"g3"},{"color":"w","from":"g2","to":"g4","flags":"b","piece":"p","san":"g4"},{"color":"w","from":"h2","to":"h3","flags":"n","piece":"p","san":"h3"},{"color":"w","from":"h2","to":"h4","flags":"b","piece":"p","san":"h4"},{"color":"w","from":"b1","to":"a3","flags":"n","piece":"n","san":"Na3"},{"color":"w","from":"b1","to":"c3","flags":"n","piece":"n","san":"Nc3"},{"color":"w","from":"g1","to":"f3","flags":"n","piece":"n","san":"Nf3"},{"color":"w","from":"g1","to":"h3","flags":"n","piece":"n","san":"Nh3"}],
                     winLoss:null,
-                    history:[]
+                    history:[],
+                    movingPlayerTurnStartTime:new Date().toJSON()
+
                 }
                 setGameState(newGame)
             },3000);
-            const afterManyMoves:GameState={
-                whiteRemainingTimeMs:30000,
-                blackRemainingTimeMs:10000,
-                blackPlayer:{username:"kevin",elo:2390,email:"kevin@kevin.com",isAdmin:false,state:"game"},
-                whitePlayer:{username:"nicole",elo:876,email:"nicole@gmail.com",isAdmin:false,state:"game"},
-                fenString:"rn1qkbnr/ppp1pppp/7P/P7/8/1b6/1PpPPPP1/RNBQKBNR b KQkq - 0 7",
-                inCheck:false,
-                playerTurn:"black",
-                possibleMoves:[{"color":"b","from":"b8","to":"d7","flags":"n","piece":"n","san":"Nd7"},{"color":"b","from":"b8","to":"c6","flags":"n","piece":"n","san":"Nc6"},{"color":"b","from":"b8","to":"a6","flags":"n","piece":"n","san":"Na6"},{"color":"b","from":"d8","to":"d7","flags":"n","piece":"q","san":"Qd7"},{"color":"b","from":"d8","to":"d6","flags":"n","piece":"q","san":"Qd6"},{"color":"b","from":"d8","to":"d5","flags":"n","piece":"q","san":"Qd5"},{"color":"b","from":"d8","to":"d4","flags":"n","piece":"q","san":"Qd4"},{"color":"b","from":"d8","to":"d3","flags":"n","piece":"q","san":"Qd3"},{"color":"b","from":"d8","to":"d2","flags":"c","piece":"q","captured":"p","san":"Qxd2+"},{"color":"b","from":"d8","to":"c8","flags":"n","piece":"q","san":"Qc8"},{"color":"b","from":"e8","to":"d7","flags":"n","piece":"k","san":"Kd7"},{"color":"b","from":"g8","to":"h6","flags":"c","piece":"n","captured":"p","san":"Nxh6"},{"color":"b","from":"g8","to":"f6","flags":"n","piece":"n","san":"Nf6"},{"color":"b","from":"a7","to":"a6","flags":"n","piece":"p","san":"a6"},{"color":"b","from":"b7","to":"b6","flags":"n","piece":"p","san":"b6"},{"color":"b","from":"b7","to":"b5","flags":"b","piece":"p","san":"b5"},{"color":"b","from":"c7","to":"c6","flags":"n","piece":"p","san":"c6"},{"color":"b","from":"c7","to":"c5","flags":"b","piece":"p","san":"c5"},{"color":"b","from":"e7","to":"e6","flags":"n","piece":"p","san":"e6"},{"color":"b","from":"e7","to":"e5","flags":"b","piece":"p","san":"e5"},{"color":"b","from":"f7","to":"f6","flags":"n","piece":"p","san":"f6"},{"color":"b","from":"f7","to":"f5","flags":"b","piece":"p","san":"f5"},{"color":"b","from":"g7","to":"g6","flags":"n","piece":"p","san":"g6"},{"color":"b","from":"g7","to":"g5","flags":"b","piece":"p","san":"g5"},{"color":"b","from":"g7","to":"h6","flags":"c","piece":"p","captured":"p","san":"gxh6"},{"color":"b","from":"b3","to":"a4","flags":"n","piece":"b","san":"Ba4"},{"color":"b","from":"b3","to":"c4","flags":"n","piece":"b","san":"Bc4"},{"color":"b","from":"b3","to":"d5","flags":"n","piece":"b","san":"Bd5"},{"color":"b","from":"b3","to":"e6","flags":"n","piece":"b","san":"Be6"},{"color":"b","from":"b3","to":"a2","flags":"n","piece":"b","san":"Ba2"},{"color":"b","from":"c2","to":"d1","flags":"cp","piece":"p","promotion":"q","captured":"q","san":"cxd1=Q#"},{"color":"b","from":"c2","to":"d1","flags":"cp","piece":"p","promotion":"r","captured":"q","san":"cxd1=R#"},{"color":"b","from":"c2","to":"d1","flags":"cp","piece":"p","promotion":"b","captured":"q","san":"cxd1=B"},{"color":"b","from":"c2","to":"d1","flags":"cp","piece":"p","promotion":"n","captured":"q","san":"cxd1=N"},{"color":"b","from":"c2","to":"b1","flags":"cp","piece":"p","promotion":"q","captured":"n","san":"cxb1=Q"},{"color":"b","from":"c2","to":"b1","flags":"cp","piece":"p","promotion":"r","captured":"n","san":"cxb1=R"},{"color":"b","from":"c2","to":"b1","flags":"cp","piece":"p","promotion":"b","captured":"n","san":"cxb1=B"},{"color":"b","from":"c2","to":"b1","flags":"cp","piece":"p","promotion":"n","captured":"n","san":"cxb1=N"}],
-                winLoss:null,
-                history: [{"color":"w","from":"a2","to":"a3","flags":"n","piece":"p","san":"a3"},{"color":"b","from":"d7","to":"d5","flags":"b","piece":"p","san":"d5"},{"color":"w","from":"a3","to":"a4","flags":"n","piece":"p","san":"a4"},{"color":"b","from":"c8","to":"e6","flags":"n","piece":"b","san":"Be6"},{"color":"w","from":"a4","to":"a5","flags":"n","piece":"p","san":"a5"},{"color":"b","from":"d5","to":"d4","flags":"n","piece":"p","san":"d4"},{"color":"w","from":"h2","to":"h3","flags":"n","piece":"p","san":"h3"},{"color":"b","from":"d4","to":"d3","flags":"n","piece":"p","san":"d3"},{"color":"w","from":"h3","to":"h4","flags":"n","piece":"p","san":"h4"},{"color":"b","from":"d3","to":"c2","flags":"c","piece":"p","captured":"p","san":"dxc2"},{"color":"w","from":"h4","to":"h5","flags":"n","piece":"p","san":"h5"},{"color":"b","from":"e6","to":"b3","flags":"n","piece":"b","san":"Bb3"},{"color":"w","from":"h5","to":"h6","flags":"n","piece":"p","san":"h6"}]
-            }
-            setTimeout(()=>setGameState(afterManyMoves),5000);
+            setTimeout(()=>{
+                const afterManyMoves:GameState={
+                    whiteRemainingTimeMs:30000,
+                    blackRemainingTimeMs:10000,
+                    blackPlayer:{username:"kevin",elo:2390,email:"kevin@kevin.com",isAdmin:false,state:"game"},
+                    whitePlayer:{username:"nicole",elo:876,email:"nicole@gmail.com",isAdmin:false,state:"game"},
+                    fenString:"rn1qkbnr/ppp1pppp/7P/P7/8/1b6/1PpPPPP1/RNBQKBNR b KQkq - 0 7",
+                    inCheck:false,
+                    playerTurn:"black",
+                    possibleMoves:[{"color":"b","from":"b8","to":"d7","flags":"n","piece":"n","san":"Nd7"},{"color":"b","from":"b8","to":"c6","flags":"n","piece":"n","san":"Nc6"},{"color":"b","from":"b8","to":"a6","flags":"n","piece":"n","san":"Na6"},{"color":"b","from":"d8","to":"d7","flags":"n","piece":"q","san":"Qd7"},{"color":"b","from":"d8","to":"d6","flags":"n","piece":"q","san":"Qd6"},{"color":"b","from":"d8","to":"d5","flags":"n","piece":"q","san":"Qd5"},{"color":"b","from":"d8","to":"d4","flags":"n","piece":"q","san":"Qd4"},{"color":"b","from":"d8","to":"d3","flags":"n","piece":"q","san":"Qd3"},{"color":"b","from":"d8","to":"d2","flags":"c","piece":"q","captured":"p","san":"Qxd2+"},{"color":"b","from":"d8","to":"c8","flags":"n","piece":"q","san":"Qc8"},{"color":"b","from":"e8","to":"d7","flags":"n","piece":"k","san":"Kd7"},{"color":"b","from":"g8","to":"h6","flags":"c","piece":"n","captured":"p","san":"Nxh6"},{"color":"b","from":"g8","to":"f6","flags":"n","piece":"n","san":"Nf6"},{"color":"b","from":"a7","to":"a6","flags":"n","piece":"p","san":"a6"},{"color":"b","from":"b7","to":"b6","flags":"n","piece":"p","san":"b6"},{"color":"b","from":"b7","to":"b5","flags":"b","piece":"p","san":"b5"},{"color":"b","from":"c7","to":"c6","flags":"n","piece":"p","san":"c6"},{"color":"b","from":"c7","to":"c5","flags":"b","piece":"p","san":"c5"},{"color":"b","from":"e7","to":"e6","flags":"n","piece":"p","san":"e6"},{"color":"b","from":"e7","to":"e5","flags":"b","piece":"p","san":"e5"},{"color":"b","from":"f7","to":"f6","flags":"n","piece":"p","san":"f6"},{"color":"b","from":"f7","to":"f5","flags":"b","piece":"p","san":"f5"},{"color":"b","from":"g7","to":"g6","flags":"n","piece":"p","san":"g6"},{"color":"b","from":"g7","to":"g5","flags":"b","piece":"p","san":"g5"},{"color":"b","from":"g7","to":"h6","flags":"c","piece":"p","captured":"p","san":"gxh6"},{"color":"b","from":"b3","to":"a4","flags":"n","piece":"b","san":"Ba4"},{"color":"b","from":"b3","to":"c4","flags":"n","piece":"b","san":"Bc4"},{"color":"b","from":"b3","to":"d5","flags":"n","piece":"b","san":"Bd5"},{"color":"b","from":"b3","to":"e6","flags":"n","piece":"b","san":"Be6"},{"color":"b","from":"b3","to":"a2","flags":"n","piece":"b","san":"Ba2"},{"color":"b","from":"c2","to":"d1","flags":"cp","piece":"p","promotion":"q","captured":"q","san":"cxd1=Q#"},{"color":"b","from":"c2","to":"d1","flags":"cp","piece":"p","promotion":"r","captured":"q","san":"cxd1=R#"},{"color":"b","from":"c2","to":"d1","flags":"cp","piece":"p","promotion":"b","captured":"q","san":"cxd1=B"},{"color":"b","from":"c2","to":"d1","flags":"cp","piece":"p","promotion":"n","captured":"q","san":"cxd1=N"},{"color":"b","from":"c2","to":"b1","flags":"cp","piece":"p","promotion":"q","captured":"n","san":"cxb1=Q"},{"color":"b","from":"c2","to":"b1","flags":"cp","piece":"p","promotion":"r","captured":"n","san":"cxb1=R"},{"color":"b","from":"c2","to":"b1","flags":"cp","piece":"p","promotion":"b","captured":"n","san":"cxb1=B"},{"color":"b","from":"c2","to":"b1","flags":"cp","piece":"p","promotion":"n","captured":"n","san":"cxb1=N"}],
+                    winLoss:null,
+                    history: [{"color":"w","from":"a2","to":"a3","flags":"n","piece":"p","san":"a3"},{"color":"b","from":"d7","to":"d5","flags":"b","piece":"p","san":"d5"},{"color":"w","from":"a3","to":"a4","flags":"n","piece":"p","san":"a4"},{"color":"b","from":"c8","to":"e6","flags":"n","piece":"b","san":"Be6"},{"color":"w","from":"a4","to":"a5","flags":"n","piece":"p","san":"a5"},{"color":"b","from":"d5","to":"d4","flags":"n","piece":"p","san":"d4"},{"color":"w","from":"h2","to":"h3","flags":"n","piece":"p","san":"h3"},{"color":"b","from":"d4","to":"d3","flags":"n","piece":"p","san":"d3"},{"color":"w","from":"h3","to":"h4","flags":"n","piece":"p","san":"h4"},{"color":"b","from":"d3","to":"c2","flags":"c","piece":"p","captured":"p","san":"dxc2"},{"color":"w","from":"h4","to":"h5","flags":"n","piece":"p","san":"h5"},{"color":"b","from":"e6","to":"b3","flags":"n","piece":"b","san":"Bb3"},{"color":"w","from":"h5","to":"h6","flags":"n","piece":"p","san":"h6"}],
+                    movingPlayerTurnStartTime:new Date().toJSON()
+                }
 
-            const afterTimeLimitUp:GameState={
-                whiteRemainingTimeMs:30000,
-                blackRemainingTimeMs:0,
-                blackPlayer:{username:"kevin",elo:2390,email:"kevin@kevin.com",isAdmin:false,state:"game"},
-                whitePlayer:{username:"nicole",elo:876,email:"nicole@gmail.com",isAdmin:false,state:"game"},
-                fenString:"rn1qkbnr/ppp1pppp/7P/P7/8/1b6/1PpPPPP1/RNBQKBNR b KQkq - 0 7",
-                inCheck:false,
-                playerTurn:"black",
-                possibleMoves:[],
-                winLoss:{gameOverState:"winLoss",winner:"white",reason:"timeout"},
-                history: [{"color":"w","from":"a2","to":"a3","flags":"n","piece":"p","san":"a3"},{"color":"b","from":"d7","to":"d5","flags":"b","piece":"p","san":"d5"},{"color":"w","from":"a3","to":"a4","flags":"n","piece":"p","san":"a4"},{"color":"b","from":"c8","to":"e6","flags":"n","piece":"b","san":"Be6"},{"color":"w","from":"a4","to":"a5","flags":"n","piece":"p","san":"a5"},{"color":"b","from":"d5","to":"d4","flags":"n","piece":"p","san":"d4"},{"color":"w","from":"h2","to":"h3","flags":"n","piece":"p","san":"h3"},{"color":"b","from":"d4","to":"d3","flags":"n","piece":"p","san":"d3"},{"color":"w","from":"h3","to":"h4","flags":"n","piece":"p","san":"h4"},{"color":"b","from":"d3","to":"c2","flags":"c","piece":"p","captured":"p","san":"dxc2"},{"color":"w","from":"h4","to":"h5","flags":"n","piece":"p","san":"h5"},{"color":"b","from":"e6","to":"b3","flags":"n","piece":"b","san":"Bb3"},{"color":"w","from":"h5","to":"h6","flags":"n","piece":"p","san":"h6"}]
-            }
+                setGameState(afterManyMoves)
+            },5000);
+
             timeoutRef.current=setTimeout(()=>{
+                const afterTimeLimitUp:GameState={
+                    whiteRemainingTimeMs:30000,
+                    blackRemainingTimeMs:0,
+                    blackPlayer:{username:"kevin",elo:2390,email:"kevin@kevin.com",isAdmin:false,state:"game"},
+                    whitePlayer:{username:"nicole",elo:876,email:"nicole@gmail.com",isAdmin:false,state:"game"},
+                    fenString:"rn1qkbnr/ppp1pppp/7P/P7/8/1b6/1PpPPPP1/RNBQKBNR b KQkq - 0 7",
+                    inCheck:false,
+                    playerTurn:"black",
+                    possibleMoves:[],
+                    winLoss:{gameOverState:"winLoss",winner:"white",reason:"timeout"},
+                    history: [{"color":"w","from":"a2","to":"a3","flags":"n","piece":"p","san":"a3"},{"color":"b","from":"d7","to":"d5","flags":"b","piece":"p","san":"d5"},{"color":"w","from":"a3","to":"a4","flags":"n","piece":"p","san":"a4"},{"color":"b","from":"c8","to":"e6","flags":"n","piece":"b","san":"Be6"},{"color":"w","from":"a4","to":"a5","flags":"n","piece":"p","san":"a5"},{"color":"b","from":"d5","to":"d4","flags":"n","piece":"p","san":"d4"},{"color":"w","from":"h2","to":"h3","flags":"n","piece":"p","san":"h3"},{"color":"b","from":"d4","to":"d3","flags":"n","piece":"p","san":"d3"},{"color":"w","from":"h3","to":"h4","flags":"n","piece":"p","san":"h4"},{"color":"b","from":"d3","to":"c2","flags":"c","piece":"p","captured":"p","san":"dxc2"},{"color":"w","from":"h4","to":"h5","flags":"n","piece":"p","san":"h5"},{"color":"b","from":"e6","to":"b3","flags":"n","piece":"b","san":"Bb3"},{"color":"w","from":"h5","to":"h6","flags":"n","piece":"p","san":"h6"}],
+                    movingPlayerTurnStartTime:new Date().toJSON()
+                }
+
                 setGameState(afterTimeLimitUp);
                 const newElo=thisUser.elo-50;
                 setThisUser({...thisUser,elo:newElo,state:"none"});
@@ -324,7 +343,8 @@ export function useChessPlayerState(onError:ErrorFunc):ChessPlayerHookReturn{
                         reason:"checkmate",
                         winner:"black"
                     },
-                    history:[{"color":"w","from":"a2","to":"a3","flags":"n","piece":"p","san":"a3"},{"color":"b","from":"d7","to":"d5","flags":"b","piece":"p","san":"d5"},{"color":"w","from":"a3","to":"a4","flags":"n","piece":"p","san":"a4"},{"color":"b","from":"c8","to":"e6","flags":"n","piece":"b","san":"Be6"},{"color":"w","from":"a4","to":"a5","flags":"n","piece":"p","san":"a5"},{"color":"b","from":"d5","to":"d4","flags":"n","piece":"p","san":"d4"},{"color":"w","from":"h2","to":"h3","flags":"n","piece":"p","san":"h3"},{"color":"b","from":"d4","to":"d3","flags":"n","piece":"p","san":"d3"},{"color":"w","from":"h3","to":"h4","flags":"n","piece":"p","san":"h4"},{"color":"b","from":"d3","to":"c2","flags":"c","piece":"p","captured":"p","san":"dxc2"},{"color":"w","from":"h4","to":"h5","flags":"n","piece":"p","san":"h5"},{"color":"b","from":"e6","to":"b3","flags":"n","piece":"b","san":"Bb3"},{"color":"w","from":"h5","to":"h6","flags":"n","piece":"p","san":"h6"},{"color":"b","from":"c2","to":"d1","flags":"cp","piece":"p","promotion":"q","captured":"q","san":"cxd1=Q#"}]
+                    history:[{"color":"w","from":"a2","to":"a3","flags":"n","piece":"p","san":"a3"},{"color":"b","from":"d7","to":"d5","flags":"b","piece":"p","san":"d5"},{"color":"w","from":"a3","to":"a4","flags":"n","piece":"p","san":"a4"},{"color":"b","from":"c8","to":"e6","flags":"n","piece":"b","san":"Be6"},{"color":"w","from":"a4","to":"a5","flags":"n","piece":"p","san":"a5"},{"color":"b","from":"d5","to":"d4","flags":"n","piece":"p","san":"d4"},{"color":"w","from":"h2","to":"h3","flags":"n","piece":"p","san":"h3"},{"color":"b","from":"d4","to":"d3","flags":"n","piece":"p","san":"d3"},{"color":"w","from":"h3","to":"h4","flags":"n","piece":"p","san":"h4"},{"color":"b","from":"d3","to":"c2","flags":"c","piece":"p","captured":"p","san":"dxc2"},{"color":"w","from":"h4","to":"h5","flags":"n","piece":"p","san":"h5"},{"color":"b","from":"e6","to":"b3","flags":"n","piece":"b","san":"Bb3"},{"color":"w","from":"h5","to":"h6","flags":"n","piece":"p","san":"h6"},{"color":"b","from":"c2","to":"d1","flags":"cp","piece":"p","promotion":"q","captured":"q","san":"cxd1=Q#"}],
+                    movingPlayerTurnStartTime:new Date().toJSON()
                 }
                 const newElo=thisUser.elo+1
                 setThisUser({...thisUser,elo:newElo,state:"none"})
