@@ -1,6 +1,6 @@
 import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {io, Socket} from "socket.io-client";
-
+import {throttle} from "lodash"
 /***
  * A single user in the application. Both admins and non-admins are represented by this type.
  */
@@ -75,7 +75,7 @@ export function useAdminState(onError:ErrorFunc):AdminHookReturn{
         connectionRef.current=connection;
     },[onError])
 
-    const deleteUsers=useCallback((emails:string[])=> {
+    const deleteUsers=useCallback(throttle((emails:string[])=> {
         const deletedEmailsSet=new Set(emails);
         const allUsersToDelete=allUsers.filter(user=>deletedEmailsSet.has(user.email));
 
@@ -91,7 +91,7 @@ export function useAdminState(onError:ErrorFunc):AdminHookReturn{
         else{
             sendIoMessage(connectionRef.current,"delete_users",JSON.stringify(emails))
         }
-    },[allUsers]);
+    },2000),[allUsers]);
 
     const allUsersWithoutDeleted=useMemo(()=>allUsers.filter(user=>user.state!=="deleted"), [allUsers])
 
@@ -104,7 +104,7 @@ export interface GameWinLossState{
 }
 
 export interface GameDraw{
-    gameOverState:"tie";
+    gameOverState:"draw";
     reason:"50-move"|"insufficient-material"|"stalemate"|"threefold-repetition";
     winner:null;
 }
@@ -165,6 +165,10 @@ export interface GameState{
     inCheck:boolean;
     winLoss:GameWinLossState|GameDraw|null;
     history:ChessMove[];
+    /**The time that the white player had, after HE/SHE LAST MADE A MOVE!*/
+    whitePlayerLastMoveTime:string;
+    /**The time that the black player had, after HE/SHE LAST MADE A MOVE!*/
+    blackPlayerLastMoveTime:string;
 }
 
 
@@ -228,65 +232,27 @@ function isPlayersTurn(game:GameState,user:User):boolean{
 export function useChessPlayerState(onError:ErrorFunc):ChessPlayerHookReturn{
     const [thisUser,setThisUser]=useState<User|null>({username:"kevin",elo:2390,email:"kevin@kevin.com",isAdmin:false,state:"none"})
     const [gameState,setGameState]=useState<GameState|null>(null);
-    const timeoutRef=useRef<any>(null);
-    const queueForGame=useCallback((timeLimit:number)=>{
+    // const connectionRef=useRef<any>(null);
+    const connectionRef=useRef<Socket|null>(null);
+
+    useEffect(()=>{
+        const connection=io().connect();
+        connection.on("user",(msg:string)=>setThisUser(JSON.parse(msg)));
+        connection.on("game",(msg:string)=>setGameState(JSON.parse(msg)));
+        connection.on("input_error",(error:string)=>onError(new Error(error)))
+        connectionRef.current=connection;
+    },[onError])
+
+
+
+    const queueForGame=useCallback(throttle((timeLimit:number)=>{
         if(thisUser!==null){
-            setThisUser({...thisUser, state:"queued"});
-            setGameState(null)
-            setTimeout(()=>{
-                setThisUser({...thisUser, state:"game"})
-            },2000)
-            setTimeout(()=>{
-                const newGame:GameState={
-                    whiteRemainingTimeMs:timeLimit,
-                    blackRemainingTimeMs:timeLimit,
-                    blackPlayer:{username:"kevin",elo:2390,email:"kevin@kevin.com",isAdmin:false,state:"game"},
-                    whitePlayer:{username:"nicole",elo:876,email:"nicole@gmail.com",isAdmin:false,state:"game"},
-                    fenString:"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-                    inCheck:false,
-                    playerTurn:"white",
-                    possibleMoves:[{"color":"w","from":"a2","to":"a3","flags":"n","piece":"p","san":"a3"},{"color":"w","from":"a2","to":"a4","flags":"b","piece":"p","san":"a4"},{"color":"w","from":"b2","to":"b3","flags":"n","piece":"p","san":"b3"},{"color":"w","from":"b2","to":"b4","flags":"b","piece":"p","san":"b4"},{"color":"w","from":"c2","to":"c3","flags":"n","piece":"p","san":"c3"},{"color":"w","from":"c2","to":"c4","flags":"b","piece":"p","san":"c4"},{"color":"w","from":"d2","to":"d3","flags":"n","piece":"p","san":"d3"},{"color":"w","from":"d2","to":"d4","flags":"b","piece":"p","san":"d4"},{"color":"w","from":"e2","to":"e3","flags":"n","piece":"p","san":"e3"},{"color":"w","from":"e2","to":"e4","flags":"b","piece":"p","san":"e4"},{"color":"w","from":"f2","to":"f3","flags":"n","piece":"p","san":"f3"},{"color":"w","from":"f2","to":"f4","flags":"b","piece":"p","san":"f4"},{"color":"w","from":"g2","to":"g3","flags":"n","piece":"p","san":"g3"},{"color":"w","from":"g2","to":"g4","flags":"b","piece":"p","san":"g4"},{"color":"w","from":"h2","to":"h3","flags":"n","piece":"p","san":"h3"},{"color":"w","from":"h2","to":"h4","flags":"b","piece":"p","san":"h4"},{"color":"w","from":"b1","to":"a3","flags":"n","piece":"n","san":"Na3"},{"color":"w","from":"b1","to":"c3","flags":"n","piece":"n","san":"Nc3"},{"color":"w","from":"g1","to":"f3","flags":"n","piece":"n","san":"Nf3"},{"color":"w","from":"g1","to":"h3","flags":"n","piece":"n","san":"Nh3"}],
-                    winLoss:null,
-                    history:[]
-                }
-                setGameState(newGame)
-            },3000);
-            const afterManyMoves:GameState={
-                whiteRemainingTimeMs:30000,
-                blackRemainingTimeMs:10000,
-                blackPlayer:{username:"kevin",elo:2390,email:"kevin@kevin.com",isAdmin:false,state:"game"},
-                whitePlayer:{username:"nicole",elo:876,email:"nicole@gmail.com",isAdmin:false,state:"game"},
-                fenString:"rn1qkbnr/ppp1pppp/7P/P7/8/1b6/1PpPPPP1/RNBQKBNR b KQkq - 0 7",
-                inCheck:false,
-                playerTurn:"black",
-                possibleMoves:[{"color":"b","from":"b8","to":"d7","flags":"n","piece":"n","san":"Nd7"},{"color":"b","from":"b8","to":"c6","flags":"n","piece":"n","san":"Nc6"},{"color":"b","from":"b8","to":"a6","flags":"n","piece":"n","san":"Na6"},{"color":"b","from":"d8","to":"d7","flags":"n","piece":"q","san":"Qd7"},{"color":"b","from":"d8","to":"d6","flags":"n","piece":"q","san":"Qd6"},{"color":"b","from":"d8","to":"d5","flags":"n","piece":"q","san":"Qd5"},{"color":"b","from":"d8","to":"d4","flags":"n","piece":"q","san":"Qd4"},{"color":"b","from":"d8","to":"d3","flags":"n","piece":"q","san":"Qd3"},{"color":"b","from":"d8","to":"d2","flags":"c","piece":"q","captured":"p","san":"Qxd2+"},{"color":"b","from":"d8","to":"c8","flags":"n","piece":"q","san":"Qc8"},{"color":"b","from":"e8","to":"d7","flags":"n","piece":"k","san":"Kd7"},{"color":"b","from":"g8","to":"h6","flags":"c","piece":"n","captured":"p","san":"Nxh6"},{"color":"b","from":"g8","to":"f6","flags":"n","piece":"n","san":"Nf6"},{"color":"b","from":"a7","to":"a6","flags":"n","piece":"p","san":"a6"},{"color":"b","from":"b7","to":"b6","flags":"n","piece":"p","san":"b6"},{"color":"b","from":"b7","to":"b5","flags":"b","piece":"p","san":"b5"},{"color":"b","from":"c7","to":"c6","flags":"n","piece":"p","san":"c6"},{"color":"b","from":"c7","to":"c5","flags":"b","piece":"p","san":"c5"},{"color":"b","from":"e7","to":"e6","flags":"n","piece":"p","san":"e6"},{"color":"b","from":"e7","to":"e5","flags":"b","piece":"p","san":"e5"},{"color":"b","from":"f7","to":"f6","flags":"n","piece":"p","san":"f6"},{"color":"b","from":"f7","to":"f5","flags":"b","piece":"p","san":"f5"},{"color":"b","from":"g7","to":"g6","flags":"n","piece":"p","san":"g6"},{"color":"b","from":"g7","to":"g5","flags":"b","piece":"p","san":"g5"},{"color":"b","from":"g7","to":"h6","flags":"c","piece":"p","captured":"p","san":"gxh6"},{"color":"b","from":"b3","to":"a4","flags":"n","piece":"b","san":"Ba4"},{"color":"b","from":"b3","to":"c4","flags":"n","piece":"b","san":"Bc4"},{"color":"b","from":"b3","to":"d5","flags":"n","piece":"b","san":"Bd5"},{"color":"b","from":"b3","to":"e6","flags":"n","piece":"b","san":"Be6"},{"color":"b","from":"b3","to":"a2","flags":"n","piece":"b","san":"Ba2"},{"color":"b","from":"c2","to":"d1","flags":"cp","piece":"p","promotion":"q","captured":"q","san":"cxd1=Q#"},{"color":"b","from":"c2","to":"d1","flags":"cp","piece":"p","promotion":"r","captured":"q","san":"cxd1=R#"},{"color":"b","from":"c2","to":"d1","flags":"cp","piece":"p","promotion":"b","captured":"q","san":"cxd1=B"},{"color":"b","from":"c2","to":"d1","flags":"cp","piece":"p","promotion":"n","captured":"q","san":"cxd1=N"},{"color":"b","from":"c2","to":"b1","flags":"cp","piece":"p","promotion":"q","captured":"n","san":"cxb1=Q"},{"color":"b","from":"c2","to":"b1","flags":"cp","piece":"p","promotion":"r","captured":"n","san":"cxb1=R"},{"color":"b","from":"c2","to":"b1","flags":"cp","piece":"p","promotion":"b","captured":"n","san":"cxb1=B"},{"color":"b","from":"c2","to":"b1","flags":"cp","piece":"p","promotion":"n","captured":"n","san":"cxb1=N"}],
-                winLoss:null,
-                history: [{"color":"w","from":"a2","to":"a3","flags":"n","piece":"p","san":"a3"},{"color":"b","from":"d7","to":"d5","flags":"b","piece":"p","san":"d5"},{"color":"w","from":"a3","to":"a4","flags":"n","piece":"p","san":"a4"},{"color":"b","from":"c8","to":"e6","flags":"n","piece":"b","san":"Be6"},{"color":"w","from":"a4","to":"a5","flags":"n","piece":"p","san":"a5"},{"color":"b","from":"d5","to":"d4","flags":"n","piece":"p","san":"d4"},{"color":"w","from":"h2","to":"h3","flags":"n","piece":"p","san":"h3"},{"color":"b","from":"d4","to":"d3","flags":"n","piece":"p","san":"d3"},{"color":"w","from":"h3","to":"h4","flags":"n","piece":"p","san":"h4"},{"color":"b","from":"d3","to":"c2","flags":"c","piece":"p","captured":"p","san":"dxc2"},{"color":"w","from":"h4","to":"h5","flags":"n","piece":"p","san":"h5"},{"color":"b","from":"e6","to":"b3","flags":"n","piece":"b","san":"Bb3"},{"color":"w","from":"h5","to":"h6","flags":"n","piece":"p","san":"h6"}]
-            }
-            setTimeout(()=>setGameState(afterManyMoves),5000);
-
-            const afterTimeLimitUp:GameState={
-                whiteRemainingTimeMs:30000,
-                blackRemainingTimeMs:0,
-                blackPlayer:{username:"kevin",elo:2390,email:"kevin@kevin.com",isAdmin:false,state:"game"},
-                whitePlayer:{username:"nicole",elo:876,email:"nicole@gmail.com",isAdmin:false,state:"game"},
-                fenString:"rn1qkbnr/ppp1pppp/7P/P7/8/1b6/1PpPPPP1/RNBQKBNR b KQkq - 0 7",
-                inCheck:false,
-                playerTurn:"black",
-                possibleMoves:[],
-                winLoss:{gameOverState:"winLoss",winner:"white",reason:"timeout"},
-                history: [{"color":"w","from":"a2","to":"a3","flags":"n","piece":"p","san":"a3"},{"color":"b","from":"d7","to":"d5","flags":"b","piece":"p","san":"d5"},{"color":"w","from":"a3","to":"a4","flags":"n","piece":"p","san":"a4"},{"color":"b","from":"c8","to":"e6","flags":"n","piece":"b","san":"Be6"},{"color":"w","from":"a4","to":"a5","flags":"n","piece":"p","san":"a5"},{"color":"b","from":"d5","to":"d4","flags":"n","piece":"p","san":"d4"},{"color":"w","from":"h2","to":"h3","flags":"n","piece":"p","san":"h3"},{"color":"b","from":"d4","to":"d3","flags":"n","piece":"p","san":"d3"},{"color":"w","from":"h3","to":"h4","flags":"n","piece":"p","san":"h4"},{"color":"b","from":"d3","to":"c2","flags":"c","piece":"p","captured":"p","san":"dxc2"},{"color":"w","from":"h4","to":"h5","flags":"n","piece":"p","san":"h5"},{"color":"b","from":"e6","to":"b3","flags":"n","piece":"b","san":"Bb3"},{"color":"w","from":"h5","to":"h6","flags":"n","piece":"p","san":"h6"}]
-            }
-            timeoutRef.current=setTimeout(()=>{
-                setGameState(afterTimeLimitUp);
-                const newElo=thisUser.elo-50;
-                setThisUser({...thisUser,elo:newElo,state:"none"});
-                timeoutRef.current=null;
-            },15000);
+            setGameState(null);
+            sendIoMessage(connectionRef.current,"play_game",timeLimit.toString());
         }
-    },[thisUser]);
+    },2000),[thisUser]);
 
-    const makeMove=useCallback((move:InputChessMove)=>{
+    const makeMove=useCallback(throttle((move:InputChessMove)=>{
             if(gameState===null){
                 throw new Error("error, cannot make move when no game.")
             }
@@ -305,32 +271,9 @@ export function useChessPlayerState(onError:ErrorFunc):ChessPlayerHookReturn{
                 throw new Error("not your turn!");
             }
             else{
-                if(timeoutRef.current!==null){
-                    clearTimeout(timeoutRef.current);
-                    timeoutRef.current=null;
-                }
-
-                const wonGame:GameState={
-                    whiteRemainingTimeMs:30000,
-                    blackRemainingTimeMs:4000,
-                    blackPlayer:{username:"kevin",elo:2390,email:"kevin@kevin.com",isAdmin:false,state:"game"},
-                    whitePlayer:{username:"nicole",elo:876,email:"nicole@gmail.com",isAdmin:false,state:"game"},
-                    fenString:"rn1qkbnr/ppp1pppp/7P/P7/8/1b6/1P1PPPP1/RNBqKBNR w KQkq - 0 8",
-                    inCheck:false,
-                    playerTurn:"white",
-                    possibleMoves:[],
-                    winLoss:{
-                        gameOverState:"winLoss",
-                        reason:"checkmate",
-                        winner:"black"
-                    },
-                    history:[{"color":"w","from":"a2","to":"a3","flags":"n","piece":"p","san":"a3"},{"color":"b","from":"d7","to":"d5","flags":"b","piece":"p","san":"d5"},{"color":"w","from":"a3","to":"a4","flags":"n","piece":"p","san":"a4"},{"color":"b","from":"c8","to":"e6","flags":"n","piece":"b","san":"Be6"},{"color":"w","from":"a4","to":"a5","flags":"n","piece":"p","san":"a5"},{"color":"b","from":"d5","to":"d4","flags":"n","piece":"p","san":"d4"},{"color":"w","from":"h2","to":"h3","flags":"n","piece":"p","san":"h3"},{"color":"b","from":"d4","to":"d3","flags":"n","piece":"p","san":"d3"},{"color":"w","from":"h3","to":"h4","flags":"n","piece":"p","san":"h4"},{"color":"b","from":"d3","to":"c2","flags":"c","piece":"p","captured":"p","san":"dxc2"},{"color":"w","from":"h4","to":"h5","flags":"n","piece":"p","san":"h5"},{"color":"b","from":"e6","to":"b3","flags":"n","piece":"b","san":"Bb3"},{"color":"w","from":"h5","to":"h6","flags":"n","piece":"p","san":"h6"},{"color":"b","from":"c2","to":"d1","flags":"cp","piece":"p","promotion":"q","captured":"q","san":"cxd1=Q#"}]
-                }
-                const newElo=thisUser.elo+1
-                setThisUser({...thisUser,elo:newElo,state:"none"})
-                setGameState(wonGame);
+                sendIoMessage(connectionRef.current,"make_move",JSON.stringify(move));
             }
-    },[gameState, thisUser]);
+    },2000),[gameState, thisUser]);
 
     if(thisUser!==null&&gameState!==null&&thisUser.state==="game"&&!isPlayersTurn(gameState,thisUser)){
         const gameStateWithNoMoves:GameState={...gameState,possibleMoves:[]};

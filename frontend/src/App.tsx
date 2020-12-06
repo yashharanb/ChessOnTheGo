@@ -50,7 +50,6 @@ function App() {
         </Switch>
       </div>
     </Router>
-
   );
 }
 
