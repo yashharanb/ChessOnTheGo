@@ -1,8 +1,9 @@
 function streams(io){
     const passport = require('passport');
     const validate = require('jsonschema').validate;
+    const { ChessInstance, Chess } = require('chess.js')
 
-    const {User, CurrentGame,HistoricalGame,Queue} = require("./models/models");
+    const {User, CurrentGame,HistoricalGame} = require("./models/models");
 
     function getUserToSend(user){
         const {state,username,email,isAdmin,elo}=user;
@@ -15,6 +16,9 @@ function streams(io){
     }
     function getUserRoom(userId){
         return `user_${userId}_room`
+    }
+    function getGameRoom(gameId){
+        return `game_${gameId}_room`
     }
 
     async function updateUsers(socket,users,partialUser){
@@ -32,9 +36,8 @@ function streams(io){
      * function to call when an administrator connects
      *
      * @param {Socket} socket
-     * @param {User} usr
      */
-    async function onAdminConnect(socket, usr) {
+    async function onAdminConnect(socket) {
         socket.join("all_users_group");
         await refreshUsers();
         socket.on("delete_users",async usersStr=>{
@@ -67,14 +70,95 @@ function streams(io){
         })
     }
 
+    function getChessJsObjectFromGame(game){
+        const chess=Chess();
+        chess.load_pgn(game.pgn);
+        return chess;
+    }
+
+    /**
+     *
+     * @param {ChessInstance} chess
+     * @param {CurrentGame} populatedGameModel
+     */
+    function getGameState(chess,populatedGameModel,timeoutPlayer){
+        const {whiteRemainingTimeMs, blackRemainingTimeMs,whitePlayer,blackPlayer,whitePlayerLastMoveTime,blackPlayerLastMoveTime}=gameModel;
+        const playerTurn=chess.turn() === "w" ? "white":"black"
+        const possibleMoves=chess.moves({verbose:true});
+        const fenString=chess.fen();
+        const inCheck=chess.in_check();
+        const history=chess.history({verbose:true});
+        let winLoss=null
+        const whitePlayerOutOfTime=whiteRemainingTimeMs===0;
+        const blackPlayerOutOfTime=blackRemainingTimeMs===0;
+        const gameOver=chess.game_over();
+        const inDraw=chess.in_draw();
+        if(gameOver||inDraw||whitePlayerOutOfTime||blackPlayerOutOfTime){
+            const isCheckmate=chess.in_checkmate();
+            const isWinOrLoss=whitePlayerOutOfTime||blackPlayerOutOfTime||isCheckmate;
+            const gameOverState=isWinOrLoss ? "winLoss":"draw";
+            if(isWinOrLoss){
+
+            }
+            // else{
+            //     //this is for the 50 move rule.
+            //     // for some reason, this is the only way to determine if the 50 move rule is a thing.
+            //     if(inDraw)
+            //
+            //
+            //         }
+            // if(chess.in_draw()){
+            // }
+            // else if(chess.in)
+
+        }
+
+        return {    whiteRemainingTimeMs,
+            blackRemainingTimeMs,
+            playerTurn,
+            whitePlayer,
+            blackPlayer,
+            possibleMoves,
+            fenString,
+            inCheck,
+            winLoss:winLoss,
+            history,
+            whitePlayerLastMoveTime,
+            blackPlayerLastMoveTime,
+        }
+    }
+
     /***
      * function to call when a regular user connects.
      *
      * @param {Socket} socket
-     * @param {User} usr
+     * @param {string} usrKey
      */
-    async function onRegularConnect(socket,usr){
-        console.log("regular connection");
+    async function onRegularConnect(socket,usrKey){
+
+        socket.on("play_game", async (timeLimitMs)=>{
+            const userGame=await CurrentGame.findOne({$or: [{whitePlayer: usrKey}, {blackPlayer: usrKey}]})
+                .populate("whitePlayer").populate("blackPlayer");
+            if(userGame!==null&&userGame.blackPlayer){
+                const gameState=getGameState(getChessJsObjectFromGame(userGame),userGame);
+                socket.emit("game",JSON.stringify(gameState));
+                socket.join(getGameRoom(userGame))
+            }
+            const user=await User.findOne({"_id":usrKey})
+            //when game found:
+            makeMoveListener=()=>{
+
+
+                // fires to 'game' client event, for all clients listening to this particular game.
+                // Make a single move on client
+            };
+
+            // kevin
+        })
+
+        socket.on("make_move",move=>{
+
+        })
     }
 
     /**
@@ -88,10 +172,10 @@ function streams(io){
                 socket.emit("user",JSON.stringify(getUserToSend(usr)));
                 socket.join(getUserRoom(userKey));
                 if(usr.isAdmin){
-                    await onAdminConnect(socket,usr);
+                    await onAdminConnect(socket);
                 }
                 else{
-                    await onRegularConnect(socket,usr);
+                    await onRegularConnect(socket,userKey);
                 }
             });
         }
@@ -99,39 +183,6 @@ function streams(io){
             socket.disconnect(true);
         }
 
-
-        socket.on("play_game", ()=>{
-            // when a user is queued/starts game, the current_user client event will change. (from subscribe_current_user). T
-            // This is to account for use cases where the user is already mid game, (ie opens a different tab).
-
-
-            // fires (current_user) client event.
-            // subscribes to 'game' client event.
-
-            let makeMoveListener=null;
-            //when game found:
-            makeMoveListener=()=>{
-                // fires to 'game' client event, for all clients listening to this particular game.
-                // Make a single move on client
-            };
-
-            socket.on("make_move",makeMoveListener)
-
-
-            //when game ended:
-            //unsubscribes to game client event
-            socket.off("make_move",makeMoveListener)
-
-            // kevin
-        })
-
-
-        // // maybe have outside spectators.... wouldn't be too difficult I think, since code shared with
-        // socket.on("subscribe_game",msg=>{
-        // 	// subscribes to 'game' client event
-        // 	// kevin
-        // });
-        //
         // socket.on("get_user_statistics",msgWithUserId=>{
         // 	// krl
         // })
