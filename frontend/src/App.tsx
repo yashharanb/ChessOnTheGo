@@ -13,7 +13,7 @@ import {Game} from './MainMenu/Game'
 import { GameWon } from './MainMenu/GameWon';
 import { GameLost } from './MainMenu/GameLost';
 import { GameDraw } from './MainMenu/GameDraw';
-import { library } from '@fortawesome/fontawesome-svg-core'
+import { library } from '@fortawesome/fontawesome-svg-core';
 import { faChessKing, faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 import {

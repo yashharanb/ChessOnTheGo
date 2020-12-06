@@ -98,7 +98,7 @@ export interface GameWinLossState{
 }
 
 export interface GameDraw{
-    gameOverState:"tie";
+    gameOverState:"draw";
     reason:"50-move"|"insufficient-material"|"stalemate"|"threefold-repetition";
     winner:null;
 }

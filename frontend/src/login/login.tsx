@@ -7,7 +7,7 @@ export function LoginPage(){
   const [validated] = useState(false);
   // Display the user login screen
   return (
-    <form  noValidate={validated}>
+    <form  noValidate={validated}  action="http://localhost:8000/users/login" method="POST">
       <div className = "logo">
         <p></p>
         <img src={logo} className="img-fluid" alt="logo" />

@@ -22,7 +22,7 @@ router.post('/registration', (req, res) =>
 {
 	const obj = JSON.parse(JSON.stringify(req.body)); // console.log(req.body) throws [Object: null prototype] error. This fixes it. From: https://stackoverflow.com/questions/56298481/how-to-fix-object-null-prototype-title-product
 	console.log(obj); //for debugging
-	
+
 	//to pull objects out to do error checking:
 	const {username, email, password, password2} = req.body;
 
@@ -42,7 +42,7 @@ router.post('/registration', (req, res) =>
 		errors.push({msg: 'Passwords do not match!'});
 		console.log('Passwords do not match!');
 	}
-	
+
 	//Now see how many errors there are in the array. If more than 0, then there are issues
 	if(errors.length > 0)
 	{
@@ -99,7 +99,7 @@ router.post('/registration', (req, res) =>
 					.catch(err => console.log(err));
 				}))
 			}
-		}); 
+		});
 	}
 });
 

@@ -3,8 +3,24 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {BrowserRouter as Router,Switch, Route,Link} from "react-router-dom";
 import winningBanner from '../images/winningBanner.png';
 import celebration from '../images/celebrate.svg';
+import { useChessPlayerState } from "../ServerHooks";
 
 export function GameWon() {
+
+  const {gameState,thisUser,makeMove,queueForGame} = useChessPlayerState(console.log);
+  let opponentName = '';
+  let userTime;
+  if(gameState){
+    if(thisUser?.username === gameState.whitePlayer.username){
+      opponentName = gameState.blackPlayer.username;
+      userTime = gameState.whiteRemainingTimeMs;
+    }else{
+      opponentName = gameState.whitePlayer.username;
+      userTime = gameState.blackRemainingTimeMs;
+    }
+  }
+
+
   // Display the statistics of the player when they win a game
   return(
     <div className="container">
@@ -19,10 +35,10 @@ export function GameWon() {
             <div className="col" >
                 <div className="border border-dark content-container bg-white text-dark" >
                     <p className="lead">
-                        Player 1 Vs. Player 2
+                        {thisUser?.username} Vs. {opponentName}
                     </p>
                     <p className="lead">
-                        Time: 25:00 Minutes
+                        Time: {userTime} Minutes
                     </p>
                     <p className="lead">
                         Total Wins: {2}

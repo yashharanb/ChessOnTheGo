@@ -55,7 +55,7 @@ app.use(function(req, res, next)
 	res.locals.error = req.flash('error');
 	next();
  });
-  
+
 //Routes
 app.use('/', require('./routes'));		//main page
 app.use('/users', require('./routes/users'));	//users page
@@ -120,4 +120,3 @@ io.on('connection', socket => {
 const PORT = process.env.PORT || 8000;
 //Starts the server on specific port
 app.listen(PORT, console.log(`Server started on port ${PORT}`));
-
