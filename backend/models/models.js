@@ -1,9 +1,13 @@
 const {Schema, model} = require('mongoose');
-
+const writeConcern={
+	w: 'majority',
+	j: true,
+	wtimeout: 1000
+}
 const UserSchema = new Schema(
 {
-	email: {type: String, required: true},
-	username: {type: String, required: true},
+	email: {type: String, required: true,unique:true},
+	username: {type: String, required: true,unique:true},
 	password: {type: String, required: true},
 	isAdmin: {type: Boolean, default: false},
 	elo: {type: Intl, default: 500,required:true},
@@ -11,7 +15,7 @@ const UserSchema = new Schema(
 	state:{type:String,default:"none", required: true, enum:["none","queued","game","deleted"]}
 },
 {	//if no colection is specified, then the default is Users
-	collection: 'Users'
+	collection: 'Users', validateBeforeSave:true, writeConcern
 });
 
 const User = model('User', UserSchema);
@@ -19,9 +23,9 @@ const User = model('User', UserSchema);
 const QueuedUserSchema=new Schema({
 	// user:{type:Ref}
 	queueStartTime : {type: Date, default: Date.now, immutable:true},
-	user:{type: Schema.Types.ObjectId, ref: 'User',immutable:true},
+	user:{type: Schema.Types.ObjectId, ref: 'User',immutable:true,unique:true},
 	gameTimeLimit:{type:Number,immutable:true}
-})
+},{ writeConcern, validateBeforeSave:true})
 const Queue=model("Queue",QueuedUserSchema);
 
 const HistoricalGameSchema=new Schema({
@@ -34,17 +38,17 @@ const HistoricalGameSchema=new Schema({
 	pgn:{type:String,required:true,immutable:true},
 	whitePlayerEloBefore:{type:Number,required:true,immutable:true},
 	blackPlayerEloBefore:{type:Number,required:true,immutable:true},
-});
+},{ safe:true, validateBeforeSave:true,writeConcern});
 const HistoricalGame=model("HistoricalGame",HistoricalGameSchema);
 const CurrentGameSchema=new Schema({
-	whitePlayer: {type: Schema.Types.ObjectId, ref: 'User',immutable:true},
-	blackPlayer :{type: Schema.Types.ObjectId, ref: 'User',immutable:true},
+	whitePlayer: {type: Schema.Types.ObjectId, ref: 'User',immutable:true,unique:true},
+	blackPlayer :{type: Schema.Types.ObjectId, ref: 'User',immutable:true,unique:true},
 	startTime:{type:Date,required:true,immutable:true,default:Date.now},
 	timeLimit:{type:Number,required:true,immutable:true},
 	pgn:{type:String,required:true,immutable:true},
 	whitePlayerTimeRemaining:{type:Number,required:true},
 	blackPlayerTimeRemaining:{type:Number,required:true},
-});
+},{ safe:true, validateBeforeSave:true,writeConcern});
 
 const CurrentGame = model("CurrentGame",CurrentGameSchema);
 
