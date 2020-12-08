@@ -12,19 +12,20 @@ function streams(io){
 
     async function refreshUsers(){
         const allCurrentUsers=await User.find({});
-        io.to("all_users_group").emit("users",JSON.stringify(allCurrentUsers.map(getUserToSend)));
+        io.in("all_users_group").emit("users",JSON.stringify(allCurrentUsers.map(getUserToSend)));
     }
     function getUserRoom(userId){
         return `user_${userId}_room`
     }
-    function getGameRoom(gameId){
-        return `game_${gameId}_room`
+    function getGameRoom(game){
+        return `game_${game.id}_room`
     }
 
     async function updateUsers(socket,users,partialUser){
         for(const user of users){
             const afterUpdate=await User.findOneAndUpdate({email:user.email},{"$set":partialUser},{new:true});
-            socket.to(getUserRoom(afterUpdate._id)).emit("user",JSON.stringify(getUserToSend(afterUpdate)));
+            const id=afterUpdate.id;
+            io.in(getUserRoom(id)).emit("user",JSON.stringify(getUserToSend(afterUpdate)));
         }
         await refreshUsers();
     }
@@ -82,15 +83,15 @@ function streams(io){
      * @param {CurrentGame} populatedGameModel
      */
     function getGameState(chess,populatedGameModel){
-        const {whiteRemainingTimeMs, blackRemainingTimeMs,whitePlayer,blackPlayer,movingPlayerTurnStartTime}=populatedGameModel;
+        const {whitePlayerTimeRemaining, blackPlayerTimeRemaining,whitePlayer,blackPlayer,movingPlayerTurnStartTime}=populatedGameModel;
         const playerTurn=chess.turn() === "w" ? "white":"black";
         const possibleMoves=chess.moves({verbose:true});
         const fenString=chess.fen();
         const inCheck=chess.in_check();
         const history=chess.history({verbose:true});
         let winLoss=null;
-        const whitePlayerOutOfTime=whiteRemainingTimeMs===0;
-        const blackPlayerOutOfTime=blackRemainingTimeMs===0;
+        const whitePlayerOutOfTime=whitePlayerTimeRemaining===0;
+        const blackPlayerOutOfTime=blackPlayerTimeRemaining===0;
         const gameOver=chess.game_over();
         const inDraw=chess.in_draw();
         if(gameOver||inDraw||whitePlayerOutOfTime||blackPlayerOutOfTime){
@@ -134,25 +135,32 @@ function streams(io){
         }
 
         return {
-            whiteRemainingTimeMs,
-            blackRemainingTimeMs,
+            whiteRemainingTimeMs:whitePlayerTimeRemaining,
+            blackRemainingTimeMs:blackPlayerTimeRemaining,
             playerTurn,
             whitePlayer,
             blackPlayer,
             possibleMoves,
             fenString,
             inCheck,
-            winLoss:winLoss,
+            winLoss,
             history,
             movingPlayerTurnStartTime,
         }
     }
 
     async function matchmakeGame(user) {
-        //todo find game within elo range
-        return null
+        const minElo=user.elo-200;
+        const maxElo=user.elo+200;
+        //todo use min max elo
+        return CurrentGame.findOne({blackPlayer:null}).sort("-queueStartTime").limit(1);
     }
+    const gameIdToTimeoutObject={}
 
+    async function handleTimeout(gameId){
+        console.log("timout!!!")
+    //    todo
+    }
     /***
      * function to call when a regular user connects.
      *
@@ -161,7 +169,8 @@ function streams(io){
      */
     async function onRegularConnect(socket,usrKey){
 
-        socket.on("play_game", async (timeLimitMs)=>{
+        socket.on("play_game", async (timeLimitMsStr)=>{
+            const timeLimitMs=parseInt(timeLimitMsStr);
             const userGame=await CurrentGame.findOne({$or: [{whitePlayer: usrKey}, {blackPlayer: usrKey}]})
                 .populate("whitePlayer").populate("blackPlayer");
             if(userGame!==null){
@@ -173,29 +182,50 @@ function streams(io){
             }
             else{
                 const user=await User.findOne({"_id":usrKey});
-                const gameToFind=await matchmakeGame(user);
-                if(gameToFind === null){
+                const matchmadeGame=await matchmakeGame(user);
 
-                    const newGame=await CurrentGame({
-                        queueStartTime : new Date(),
-                        whitePlayer: user,
-                        blackPlayer :null,
-                        startTime:new Date(),
-                        timeLimit:timeLimitMs,
-                        pgn:"",
-                        whitePlayerTimeRemaining:timeLimitMs,
-                        blackPlayerTimeRemaining:timeLimitMs,
-                    }).save()
-                    console.log(newGame.id)
+                if(matchmadeGame === null){
+                    const newGame=await CurrentGame({ queueStartTime : new Date(), whitePlayer: user, blackPlayer :null,  startTime:null, timeLimit:timeLimitMs, pgn:"",
+                        whitePlayerTimeRemaining:timeLimitMs, blackPlayerTimeRemaining:timeLimitMs}).save();
+                    socket.join(getGameRoom(newGame));
+                    await updateUsers(socket,[user],{state:"queued"});
+                }
+                else{
+                    matchmadeGame.blackPlayer=user._id;
+                    matchmadeGame.startTime=new Date();
+                    matchmadeGame.pgn="";
+                    matchmadeGame.movingPlayerTurnStartTime=new Date();
+                    const savedGame=await matchmadeGame.save();
+                    const populatedGame=await savedGame.populate('whitePlayer').populate('blackPlayer').execPopulate();
+                    socket.join(getGameRoom(populatedGame));
+                    const gameState=getGameState(getChessJsObjectFromGame(populatedGame),populatedGame);
+                    await updateUsers(socket,[user,populatedGame.whitePlayer],{state:"game"});
+                    io.in(getGameRoom(populatedGame)).emit("game",JSON.stringify(gameState));
+
+                    gameIdToTimeoutObject[populatedGame.id]=setTimeout(()=>handleTimeout(populatedGame.id),timeLimitMs);
                 }
             }
+        });
+
+        socket.on("make_move",async move=>{
+
+        const user=await User.findOne({"_id":usrKey});
+        const matchmadeGame=await matchmakeGame(user);
+            if(matchmadeGame === null){
+                emitError(socket,"error, made move when not in game");
+            } //did not specify pawn
+            else if(move.to.endsWith("8")||move.to.endsWith("1")){
+                if(move.piece.toUpperCase().endsWith("P")&&typeof move.promotion==="undefined"){
+                    throw new Error("error, must specify pawn promotion type");
+                }
+            }
+            // else {
+            //     // //is p
+            //     // else if(!isPlayersTurn(gameState,thisUser)){
+            //     //     throw new Error("not your turn!");
+            //     // }
         })
 
-        socket.on("make_move",move=>{
-            // fires to 'game' client event, for all clients listening to this particular game.
-            // Make a single move on client
-
-        })
     }
 
     /**
@@ -207,7 +237,7 @@ function streams(io){
         if(userKey){
             passport.deserializeUser(userKey,async (err,usr)=>{
                 socket.emit("user",JSON.stringify(getUserToSend(usr)));
-                socket.join(getUserRoom(userKey));
+                socket.join(getUserRoom(usr.id));
                 if(usr.isAdmin){
                     await onAdminConnect(socket);
                 }

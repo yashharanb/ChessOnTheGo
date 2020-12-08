@@ -30,20 +30,20 @@ const HistoricalGameSchema=new Schema({
 	pgn:{type:String,required:true,immutable:true},
 	whitePlayerEloBefore:{type:Number,required:true,immutable:true},
 	blackPlayerEloBefore:{type:Number,required:true,immutable:true},
-},{ safe:true, validateBeforeSave:true,writeConcern});
+},{ validateBeforeSave:true,writeConcern});
 
 const HistoricalGame=model("HistoricalGame",HistoricalGameSchema);
 const CurrentGameSchema=new Schema({
 	queueStartTime : {type: Date, default: Date.now, immutable:true},
 	whitePlayer: {type: Schema.Types.ObjectId, ref: 'User',immutable:true,unique:true,required:true},
 	blackPlayer :{type: Schema.Types.ObjectId, ref: 'User',unique:true},
-	startTime:{type:Date,required:true,default:null},
+	startTime:{type:Date,default:null},
 	timeLimit:{type:Number,required:true,immutable:true},
-	pgn:{type:String,required:true},
+	pgn:{type:String},
 	whitePlayerTimeRemaining:{type:Number,required:true},
 	blackPlayerTimeRemaining:{type:Number,required:true},
 	movingPlayerTurnStartTime:{type:Date,default:null},
-},{ safe:true, validateBeforeSave:true,writeConcern});
+},{ validateBeforeSave:true,writeConcern});
 
 const CurrentGame = model("CurrentGame",CurrentGameSchema);
 
