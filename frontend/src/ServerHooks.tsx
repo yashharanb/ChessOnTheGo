@@ -269,10 +269,8 @@ export function useChessPlayerState(onError:ErrorFunc):ChessPlayerHookReturn{
             else if (thisUser.state!=="game"){
                 throw new Error("must be playing game");
             }
-            else if(move.to.endsWith("8")||move.to.endsWith("1")){
-                if(move.piece.toUpperCase().endsWith("P")&&typeof move.promotion==="undefined"){
-                    throw new Error("error, the developer forgot to promote a pawn, before calling makeMove");
-                }
+            else if(move.piece.toUpperCase().endsWith("P")&&(typeof move.promotion==="undefined")&&(move.to.endsWith("8")||move.to.endsWith("1"))){
+                throw new Error("error, the developer forgot to promote a pawn, before calling makeMove");
             }
             else if(!isPlayersTurn(gameState,thisUser)){
                 throw new Error("not your turn!");
