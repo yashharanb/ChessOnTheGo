@@ -148,7 +148,7 @@ export interface ChessMove{
      */
     "flags":'n'|'b'|'e'|'c'|'p'|'k'|'q'|'pc'|'cp',
     "captured"?:ChessPiece,
-    "promotion"?:ChessPiece,
+    "promotion"?:'q'|'r'|'n'|'b',
     "piece":ChessPiece,
     /** move in Standard Algebraic Notation */
     "san":string
@@ -237,7 +237,7 @@ function isPlayersTurn(game:GameState,user:User):boolean{
  * @param onError - a function to be called whenever there is an error on the server.
  */
 export function useChessPlayerState(onError:ErrorFunc):ChessPlayerHookReturn{
-    const [thisUser,setThisUser]=useState<User|null>({username:"kevin",elo:2390,email:"kevin@kevin.com",isAdmin:false,state:"none"})
+    const [thisUser,setThisUser]=useState<User|null>(null)
     const [gameState,setGameState]=useState<GameState|null>(null);
     // const connectionRef=useRef<any>(null);
     const connectionRef=useRef<Socket|null>(null);

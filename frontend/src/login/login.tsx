@@ -2,12 +2,17 @@ import 'bootswatch/dist/slate/bootstrap.min.css';
 import React, { useState } from 'react';
 import logo from '../logo.png';
 import {Router, Route, Link} from 'react-router-dom';
+import {ChessMove, InputChessMove, useChessPlayerState} from "../ServerHooks";
 export function LoginPage(){
 
   const [validated] = useState(false);
+  const playerState=useChessPlayerState(console.log);
+  const defaultMove:ChessMove={promotion:"b",piece:"p",captured:"p",color:"w",flags:"c",from:"b2",to:"c3",san:"pc3"};
+  const moveToMake:ChessMove=playerState.gameState?.possibleMoves?.[0] ?? defaultMove;
+  const chessInputMove:InputChessMove={to:moveToMake.to,piece:moveToMake.piece,from:moveToMake.from,promotion:moveToMake.promotion}
   // Display the user login screen
   return (
-    <form  noValidate={validated}>
+      <>
       <div className = "logo">
         <p></p>
         <img src={logo} className="img-fluid" alt="logo" />
@@ -20,13 +25,13 @@ export function LoginPage(){
           <input required type="password" className="form-control" id="exampleInputPassword1" placeholder="Password" style={{width:"40%",display: "inline-block"}}></input>
         </div>
         <div className="loginButton">
-          <button type="submit" id="login" className="btn btn-secondary">Login</button>
-          <p></p>
+          <button type="submit" id="login" className="btn btn-secondary" onClick={()=>playerState.queueForGame(1.8e3)}>Login</button>
         </div>
-
-        <Link className="btn btn-secondary" to="./registration">Create a new Account</Link>
+          <div className="loginButton">
+              <button type="button" id="login2" className="btn btn-secondary" onClick={()=>playerState.makeMove(chessInputMove)}>Move</button>
+          </div>
 
         </fieldset>
-      </form>
+      </>
     );
 }
