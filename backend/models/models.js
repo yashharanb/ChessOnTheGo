@@ -27,7 +27,7 @@ const HistoricalGameSchema=new Schema({
 	startTime:{type:Date,required:true,immutable:true},
 	endTime:{type:Date,default:Date.now,immutable:true},
 	timeLimit:{type:Number,required:true,immutable:true},
-	pgn:{type:String,required:true,immutable:true},
+	pgn:{type:String,immutable:true},
 	whitePlayerEloBefore:{type:Number,required:true,immutable:true},
 	blackPlayerEloBefore:{type:Number,required:true,immutable:true},
 },{ validateBeforeSave:true,writeConcern});
@@ -36,7 +36,7 @@ const HistoricalGame=model("HistoricalGame",HistoricalGameSchema);
 const CurrentGameSchema=new Schema({
 	queueStartTime : {type: Date, default: Date.now, immutable:true},
 	whitePlayer: {type: Schema.Types.ObjectId, ref: 'User',immutable:true,unique:true,required:true},
-	blackPlayer :{type: Schema.Types.ObjectId, ref: 'User',unique:true},
+	blackPlayer: {type: Schema.Types.ObjectId, ref: 'User',unique:true},
 	startTime:{type:Date,default:null},
 	timeLimit:{type:Number,required:true,immutable:true},
 	pgn:{type:String},
@@ -46,6 +46,7 @@ const CurrentGameSchema=new Schema({
 },{ validateBeforeSave:true,writeConcern});
 
 const CurrentGame = model("CurrentGame",CurrentGameSchema);
-
+CurrentGame.deleteMany({},()=>{})
+User.updateMany({},{state:"none"},null,()=>{})
 
 module.exports={User,CurrentGame, HistoricalGame}
