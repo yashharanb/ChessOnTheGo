@@ -155,11 +155,16 @@ function streams(io){
     }
 
 
-    async function matchmakeGame(user) {
+    async function matchmakeGame(user,timeLimitMs) {
         const minElo=user.elo-200;
         const maxElo=user.elo+200;
-        //todo use min max elo
-        return CurrentGame.findOne({blackPlayer:null}).sort("-queueStartTime").limit(1);
+        const currentGamesWithFilteredPlayers=await CurrentGame.find({blackPlayer:null, timeLimit:timeLimitMs}).populate({path:"whitePlayer",match:{elo:{$lt:maxElo,$gt:minElo}}}).sort("-queueStartTime");
+        for(const game of currentGamesWithFilteredPlayers){
+            if(game.whitePlayer!==null){
+                return game;
+            }
+        }
+        return null;
     }
     const gameIdToTimeoutObject={}
 
@@ -243,7 +248,7 @@ function streams(io){
             }
             else{
                 const user=await User.findOne({"_id":usrKey});
-                const matchmadeGame=await matchmakeGame(user);
+                const matchmadeGame=await matchmakeGame(user,timeLimitMs);
 
                 if(matchmadeGame === null){
                     const newGame=await (new CurrentGame({ queueStartTime : new Date(), whitePlayer: user, blackPlayer :null,  startTime:null, timeLimit:timeLimitMs, pgn:"",

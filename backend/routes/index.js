@@ -1,4 +1,5 @@
 const express = require('express');
+const {HistoricalGame}=require('../models/models')
 const router = express.Router();
 
  //for route protection
@@ -17,6 +18,23 @@ router.get('/dashboard', ensureAuthenticated, (req, res) => res.render('dashboar
 {
 	username: req.user.username
 }));
+
+function getUserToSend(user){
+    const {state,username,email,isAdmin,elo}=user;
+    return {state,username,email,isAdmin,elo};
+}
+
+router.get('/previousGames',ensureAuthenticated,async (req,res)=>{
+    const id=req.user.id;
+    const games=await HistoricalGame.find({$or: [{whitePlayer: id}, {blackPlayer: id}]}).populate("whitePlayer").populate("blackPlayer");
+    const gamesToSend=games.map(game=>{
+        const whitePlayer=getUserToSend(game.whitePlayer);
+        const blackPlayer=getUserToSend(game.blackPlayer);
+        const gameJson=game.toJSON();
+        return {...gameJson,whitePlayer,blackPlayer};
+    })
+    res.send(JSON.stringify(gamesToSend));
+});
 
 
 
