@@ -46,7 +46,7 @@ const CurrentGameSchema=new Schema({
 },{ validateBeforeSave:true,writeConcern});
 
 const CurrentGame = model("CurrentGame",CurrentGameSchema);
-CurrentGame.deleteMany({},()=>{})
-User.updateMany({},{state:"none"},null,()=>{})
+// CurrentGame.deleteMany({},()=>{})
+// User.updateMany({},{state:"none"},null,()=>{})
 
 module.exports={User,CurrentGame, HistoricalGame}
