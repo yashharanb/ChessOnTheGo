@@ -36,7 +36,7 @@ const HistoricalGame=model("HistoricalGame",HistoricalGameSchema);
 const CurrentGameSchema=new Schema({
 	queueStartTime : {type: Date, default: Date.now, immutable:true},
 	whitePlayer: {type: Schema.Types.ObjectId, ref: 'User',immutable:true,unique:true,required:true},
-	blackPlayer: {type: Schema.Types.ObjectId, ref: 'User',unique:true},
+	blackPlayer: {type: Schema.Types.ObjectId, ref: 'User'},
 	startTime:{type:Date,default:null},
 	timeLimit:{type:Number,required:true,immutable:true},
 	pgn:{type:String},
