@@ -35,7 +35,7 @@ function App() {
   // Routes specify which component to display
   // Fragment allows only certain pages to have a header component displayed.
   return (
-    <Router>
+    <Router basename={process.env.PUBLIC_URL}>
     <div className="App">
     <div>
     <Switch>

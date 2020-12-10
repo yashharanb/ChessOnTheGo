@@ -309,7 +309,14 @@ export interface HistoricalGame{
 export async function getPlayerStats():Promise<HistoricalGame[]>{
     const prevsiousGamesRes=await fetch("/previousGames");
     if(prevsiousGamesRes.ok){
-        return JSON.parse(await prevsiousGamesRes.text());
+        try{
+            const text=await prevsiousGamesRes.text()
+            return JSON.parse(text);
+        }
+        catch (e){
+            //since it redirects to login page when not logged in, when it fails json.parse its not logged in.
+            throw new Error("not logged in");
+        }
     }
     else{
         throw new Error("Error, cannot get player statistics");
