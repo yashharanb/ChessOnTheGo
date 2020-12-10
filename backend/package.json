@@ -11,9 +11,11 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
+		"@types/chess.js": "^0.10.1",
 		"@types/passport": "^1.0.4",
 		"@types/socket.io": "^2.1.11",
 		"bcryptjs": "^2.4.3",
+		"chess.js": "^0.11.0",
 		"connect-flash": "^0.1.1",
 		"cookie": "^0.4.1",
 		"dotenv": "^8.2.0",

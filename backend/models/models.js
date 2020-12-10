@@ -20,14 +20,6 @@ const UserSchema = new Schema(
 
 const User = model('User', UserSchema);
 
-const QueuedUserSchema=new Schema({
-	// user:{type:Ref}
-	queueStartTime : {type: Date, default: Date.now, immutable:true},
-	user:{type: Schema.Types.ObjectId, ref: 'User',immutable:true,unique:true},
-	gameTimeLimit:{type:Number,immutable:true}
-},{ writeConcern, validateBeforeSave:true})
-const Queue=model("Queue",QueuedUserSchema);
-
 const HistoricalGameSchema=new Schema({
 	whitePlayer: {type: Schema.Types.ObjectId, ref: 'User',immutable:true},
 	blackPlayer :{type: Schema.Types.ObjectId, ref: 'User',immutable:true},
@@ -35,22 +27,26 @@ const HistoricalGameSchema=new Schema({
 	startTime:{type:Date,required:true,immutable:true},
 	endTime:{type:Date,default:Date.now,immutable:true},
 	timeLimit:{type:Number,required:true,immutable:true},
-	pgn:{type:String,required:true,immutable:true},
+	pgn:{type:String,immutable:true},
 	whitePlayerEloBefore:{type:Number,required:true,immutable:true},
 	blackPlayerEloBefore:{type:Number,required:true,immutable:true},
-},{ safe:true, validateBeforeSave:true,writeConcern});
+},{ validateBeforeSave:true,writeConcern});
+
 const HistoricalGame=model("HistoricalGame",HistoricalGameSchema);
 const CurrentGameSchema=new Schema({
-	whitePlayer: {type: Schema.Types.ObjectId, ref: 'User',immutable:true,unique:true},
-	blackPlayer :{type: Schema.Types.ObjectId, ref: 'User',immutable:true,unique:true},
-	startTime:{type:Date,required:true,immutable:true,default:Date.now},
+	queueStartTime : {type: Date, default: Date.now, immutable:true},
+	whitePlayer: {type: Schema.Types.ObjectId, ref: 'User',immutable:true,unique:true,required:true},
+	blackPlayer: {type: Schema.Types.ObjectId, ref: 'User'},
+	startTime:{type:Date,default:null},
 	timeLimit:{type:Number,required:true,immutable:true},
-	pgn:{type:String,required:true,immutable:true},
+	pgn:{type:String},
 	whitePlayerTimeRemaining:{type:Number,required:true},
 	blackPlayerTimeRemaining:{type:Number,required:true},
-},{ safe:true, validateBeforeSave:true,writeConcern});
+	movingPlayerTurnStartTime:{type:Date,default:null},
+},{ validateBeforeSave:true,writeConcern});
 
 const CurrentGame = model("CurrentGame",CurrentGameSchema);
+// CurrentGame.deleteMany({},()=>{})
+// User.updateMany({},{state:"none"},null,()=>{})
 
-
-module.exports={User,Queue,CurrentGame, HistoricalGame}
+module.exports={User,CurrentGame, HistoricalGame}

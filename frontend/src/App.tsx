@@ -36,7 +36,6 @@ function App() {
   // Fragment allows only certain pages to have a header component displayed.
   return (
     <Router>
-
     <div className="App">
     <div>
     <Switch>
@@ -59,8 +58,6 @@ function App() {
   </div>
   </div>
   </Router>
-
-
   );
 }
 
