@@ -1,9 +1,9 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {BrowserRouter as Router,Switch, Route,Link} from "react-router-dom";
 import winningBanner from '../images/winningBanner.png';
 import celebration from '../images/celebrate.svg';
-import { useChessPlayerState } from "../ServerHooks";
+import { useChessPlayerState,HistoricalGame , getPlayerStats} from "../ServerHooks";
 
 export function GameWon() {
 
@@ -20,9 +20,21 @@ export function GameWon() {
     }
   }
 
+  const [stats,setStats]=useState<null|HistoricalGame[]>(null);
+  // Display the user login screen
+  useEffect(()=>{
+    const func=async()=>{
+      const playerStats=await getPlayerStats();
+      setStats(playerStats);
+    }
+    func()
+  },[])
+
+  console.log(JSON.stringify(stats));
 
   // Display the statistics of the player when they win a game
   return(
+
     <div className="container">
 
       <img src={winningBanner} className="img-fluid" alt="winningBanner" />

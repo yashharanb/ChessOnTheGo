@@ -16,7 +16,6 @@ export function Game() {
     }else{
       return 500;
     }
-
   }
 
   const {gameState,thisUser,makeMove,queueForGame} = useChessPlayerState(console.log);

@@ -286,8 +286,6 @@ export function useChessPlayerState(onError:ErrorFunc):ChessPlayerHookReturn{
     }
     return {gameState,thisUser,makeMove,queueForGame};
 }
-<<<<<<< HEAD
-=======
 
 /**
  * A string, which can be turned into a date easily by passing it to the new Date() constructor.
@@ -317,4 +315,3 @@ export async function getPlayerStats():Promise<HistoricalGame[]>{
         throw new Error("Error, cannot get player statistics");
     }
 }
->>>>>>> main
