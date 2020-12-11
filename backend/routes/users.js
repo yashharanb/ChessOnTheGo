@@ -118,7 +118,7 @@ function users(refreshUsers) {
 		}
 		if (req.user.isAdmin == false)
 		{
-			res.redirect('/app/dashboard');
+			res.redirect('/app/menu');
 		}
 	});
 
