@@ -4,7 +4,6 @@ const cookieParser = require('cookie-parser');
 const app = express();
 app.use(cookieParser())
 
-app.use(express.static(__dirname + '/public'))
 
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
@@ -18,7 +17,8 @@ require("dotenv/config");
 //for the express session middleware
 const flash = require('connect-flash');
 const session = require('express-session');
-
+app.use("/app", express.static(__dirname + '/react'))
+app.get("/app/*",(rq,res)=>{res.sendFile(__dirname + "/react/index.html")})
 //for passpport.js config called in the "//Needed by passport.js middleware in the config folder and has to be after the //Express session section in here" section
 const passport = require('passport');
 require('./config/passport')(passport);

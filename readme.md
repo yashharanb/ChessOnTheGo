@@ -1,6 +1,6 @@
 # Installing
 
-First, clone this reprository.
+First, clone this repository.
 
 Then, run
 

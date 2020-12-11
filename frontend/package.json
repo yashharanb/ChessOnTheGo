@@ -1,5 +1,6 @@
 {
   "name": "chess_on_the_go_frontend",
+  "homepage": "/app",
   "version": "0.1.0",
   "private": true,
   "proxy": "http://localhost:8000",

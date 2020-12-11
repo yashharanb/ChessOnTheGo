@@ -114,11 +114,11 @@ function users(refreshUsers) {
 		if (req.user.isAdmin == true)
 		{
 			//res.redirect('/admin.tsx'); //whichever one works when we do the build
-			res.redirect('/admin.html');  //for now as just a place holder for testing to show that the routing works
+			res.redirect('/app/admin');  //for now as just a place holder for testing to show that the routing works
 		}
 		if (req.user.isAdmin == false)
 		{
-			res.redirect('/dashboard');
+			res.redirect('/app/dashboard');
 		}
 	});
 
