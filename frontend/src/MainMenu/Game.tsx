@@ -1,51 +1,75 @@
 import React from 'react';
-import ChessBoard from 'chessboardjsx';
+import Chessboard from 'chessboardjsx';
 import { useWindowResize } from "beautiful-react-hooks";
 import timer from '../images/timer.png';
 import { useChessPlayerState } from "../ServerHooks";
-
-const { useState } = React;
-export function Game() {
+import { GameStateRouteProps } from './GameStateRoute';
 
 
-
-  let calcWidth=({screenWidth,screenHeight}:any)=>{
-    if(document && document.getElementById('typehead')){
-      // @ts-ignore
-      return document.getElementById('typehead').clientWidth;
-    }else{
-      return 500;
+export function Game({thisUser, makeMove, gameState}:GameStateRouteProps) {
+    let calcWidth = ({ screenWidth, screenHeight }: any) => {
+        if (document && document.getElementById('typehead')) {
+            // @ts-ignore
+            return document.getElementById('typehead').clientWidth;
+        } else {
+            return 500;
+        }
     }
-  }
 
-  const {gameState,thisUser,makeMove,queueForGame} = useChessPlayerState(console.log);
+    console.log(gameState?.whitePlayer.username);
+    console.log(thisUser?.username);
+    console.log(gameState?.whiteRemainingTimeMs);
+    console.log(gameState?.blackRemainingTimeMs);
 
-// Display the chess board
-  return(
-    <div className="container" id="typehead" >
-    <div className="row">
-    <div className="col">
-      <img src={timer} className="img-fluid" alt="timer" />
-      21:00
-    </div>
-    </div>
+    let onDrop = ()=> {
+        console.log("DRAG");
+    }
 
-      <div className="row" >
-        <div className="col p-0"  >
-          <ChessBoard position="start" calcWidth={calcWidth}
-                      orientation={gameState?.playerTurn}/>
+    // Display the chess board
+    return (
+        <div className="container" id="typehead" >
+            <div className="row">
+                <div className="col">
+                    <img src={timer} className="img-fluid" alt="timer" />
+                    {gameState?.whitePlayer.username!==thisUser?.username ? gameState?.whiteRemainingTimeMs:gameState?.blackRemainingTimeMs}
+                </div>
+            </div>
+
+            <div className="row" >
+                <div className="col p-0"  >
+                    <Chessboard
+                        // id="humanVsHuman"
+                        // position={gameState.fenString}
+                        // calcWidth={calcWidth}
+                        // orientation={gameState?.whitePlayer.username===thisUser?.username ? "white":"black"}
+                        // onDrop={onDrop}
+                        id="humanVsHuman"
+                        width={320}
+                        position={gameState.fenString}
+                        onDrop={()=>console.log("drop")}
+                        onMouseOverSquare={()=>console.log("mouseover")}
+                        onMouseOutSquare={()=>console.log("mouseout")}
+                        boardStyle={{
+                          borderRadius: "5px",
+                          boxShadow: `0 5px 15px rgba(0, 0, 0, 0.5)`
+                        }}
+                        squareStyles={{}}
+                        dropSquareStyle={{}}
+                        onDragOverSquare={()=>console.log("dragover")}
+                        onSquareClick={()=>console.log("click")}
+                        onSquareRightClick={()=>console.log("right click")}
+            
+                    />
+                </div>
+            </div>
+
+            <div className="row">
+                <div className="col">
+                    <img src={timer} className="img-fluid" alt="timer" />
+                    {gameState?.whitePlayer.username===thisUser?.username ? gameState?.whiteRemainingTimeMs:gameState?.blackRemainingTimeMs}
+                </div>
+            </div>
         </div>
-      </div>
-
-      <div className="row">
-      <div className="col">
-        <img src={timer} className="img-fluid" alt="timer" />
-        11:21
-      </div>
-    </div>
-
-
-    </div>
-  );
+    );
 
 }

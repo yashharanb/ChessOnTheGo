@@ -1,7 +1,4 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
-import App from '../App';
-import { PlayerStatistics } from "../PlayerStatistics";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     BrowserRouter as Router,
@@ -46,7 +43,7 @@ export function PlayerMainMenu() {
             </div>
             <div className="row">
                 <div className="col">
-                    <Link className="btn btn-secondary" to="../Game">New Game</Link>
+                    <Link className="btn btn-secondary" to="../QueueOrGame">New Game</Link>
                 </div>
                 <div className="col">
                     <Link className="btn btn-secondary" to="../playerstats">Player Stats</Link>
