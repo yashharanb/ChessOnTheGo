@@ -37,11 +37,21 @@ export function GameWon() {
   let totalDrawCounter = 0;
 
   if(stats){
-    if(thisUser?.username == stats[0].blackPlayer.username){
-      if(stats[0].winner == "black"){
+    if(thisUser?.username === stats[0].blackPlayer.username){
+      if(stats[0].winner === "black"){
           totalWinCounter = totalWinCounter+1;
       }
-      else if(stats[0].winner == "white"){
+      else if(stats[0].winner === "white"){
+        totalLossCounter = totalLossCounter+1;
+      }
+      else{
+        totalDrawCounter = totalDrawCounter+1;
+      }
+    }else{
+      if(stats[0].winner === "white"){
+          totalWinCounter = totalWinCounter+1;
+      }
+      else if(stats[0].winner === "black"){
         totalLossCounter = totalLossCounter+1;
       }
       else{
