@@ -3,7 +3,6 @@ import './App.css';
 import 'bootswatch/dist/slate/bootstrap.min.css';
 
 import { LoginPage } from './login/login';
-import { Queue } from './Queue/Queue';
 import { RegisterPage } from './login/registration';
 import { PlayerMainMenu } from './MainMenu/PlayerMainMenu';
 import { PlayerStatistics } from "./PlayerStatistics";
@@ -15,6 +14,7 @@ import { GameLost } from './MainMenu/GameLost';
 import { GameDraw } from './MainMenu/GameDraw';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faChessKing, faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { QueueOrGame } from './QueueOrGame';
 
 import {
   BrowserRouter as Router,
@@ -45,7 +45,7 @@ function App() {
         <Header/>
           <div className="App d-flex justify-content-center h-100 align-middle">
             <Route path='/menu' component={PlayerMainMenu}/>
-            <Route path='/queue' component={Queue} />
+            <Route path='/QueueOrGame' component={QueueOrGame} />
             <Route path='/playerstats' component={PlayerStatistics} />
             <Route path='/admin' component={Admin} />
             <Route path='/Game' component={Game}/>

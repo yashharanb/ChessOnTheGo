@@ -1,12 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import { render, screen } from '@testing-library/react';
-import App from '../App';
-import { PlayerStatistics } from "../PlayerStatistics";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-    BrowserRouter as Router,
-    Switch,
-    Route,
     Link
 } from "react-router-dom";
 import { useChessPlayerState,HistoricalGame , getPlayerStats} from "../ServerHooks";
@@ -89,7 +83,7 @@ if(stats){
             </div>
             <div className="row">
                 <div className="col">
-                    <Link className="btn btn-secondary" to="../Game">New Game</Link>
+                    <Link className="btn btn-secondary" to="../QueueOrGame">New Game</Link>
                 </div>
                 <div className="col">
                     <Link className="btn btn-secondary" to="../playerstats">Player Stats</Link>
