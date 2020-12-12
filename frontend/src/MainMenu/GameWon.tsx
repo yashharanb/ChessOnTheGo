@@ -30,7 +30,26 @@ export function GameWon() {
     func()
   },[])
 
-  console.log(JSON.stringify(stats));
+  console.log(stats);
+
+  let totalWinCounter = 0;
+  let totalLossCounter = 0;
+  let totalDrawCounter = 0;
+
+  if(stats){
+    if(thisUser?.username == stats[0].blackPlayer.username){
+      if(stats[0].winner == "black"){
+          totalWinCounter = totalWinCounter+1;
+      }
+      else if(stats[0].winner == "white"){
+        totalLossCounter = totalLossCounter+1;
+      }
+      else{
+        totalDrawCounter = totalDrawCounter+1;
+      }
+    }
+    console.log(totalWinCounter);
+  }
 
   // Display the statistics of the player when they win a game
   return(
@@ -53,13 +72,13 @@ export function GameWon() {
                         Time: {userTime} Minutes
                     </p>
                     <p className="lead">
-                        Total Wins: {2}
+                        Total Wins: {totalWinCounter}
                     </p>
                     <p className="lead">
-                        Total Wins: {2}
+                        Total Loss: {totalLossCounter}
                     </p>
                     <p className="lead">
-                        Total Draws: {3}
+                        Total Draws: {totalDrawCounter}
                     </p>
                 </div>
             </div>
