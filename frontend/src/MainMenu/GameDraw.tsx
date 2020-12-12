@@ -25,6 +25,7 @@ export function GameDraw() {
   useEffect(()=>{
     queueForGame(2);
   },[]);
+console.log(thisUser?.state);
 
   const [stats,setStats]=useState<null|HistoricalGame[]>(null);
   // Display the user login screen
