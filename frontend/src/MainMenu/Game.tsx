@@ -1,10 +1,43 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import Chessboard from 'chessboardjsx';
 import { useWindowResize } from "beautiful-react-hooks";
 import timer from '../images/timer.png';
 import { InputChessMove, useChessPlayerState } from "../ServerHooks";
 import { GameStateRouteProps } from './GameStateRoute';
 
+
+function getDisplayedTimeFromRemainingTime(timeRemainingMs:number,timeTurnStarted:Date|null):number{
+    //if not players turn, simply return rounded TimeRemainingMs
+    if(timeTurnStarted===null){
+        return Math.round(timeRemainingMs/1000);
+    }
+    else{
+        const timeElapsedSinceTurnStarted:number=(new Date()).getTime() - timeTurnStarted.getTime();
+        const actualTimeRemaining=timeRemainingMs-timeElapsedSinceTurnStarted;
+        return Math.round(actualTimeRemaining/1000);
+    }
+    // const timeElapsedSinceTurnStarted=
+}
+/**
+ *
+ * @param timeRemainingMs
+ * @param timeLastMove
+ * @constructor
+ */
+function ChessTimer({timeRemainingMs,timeTurnStarted}:{timeRemainingMs:number,timeTurnStarted:Date|null}){
+    const [displayedTime,setDisplayedTime]=useState(getDisplayedTimeFromRemainingTime(timeRemainingMs,timeTurnStarted));
+
+    useEffect(()=>{
+        const interval=setInterval(()=>{
+            setDisplayedTime(getDisplayedTimeFromRemainingTime(timeRemainingMs,timeTurnStarted))
+        },1000);
+        return ()=>clearInterval(interval);
+    },[timeRemainingMs,timeTurnStarted]);
+    return <>
+        <img src={timer} className="img-fluid" alt="timer" />
+        {displayedTime}
+    </>
+}
 
 export function Game({thisUser, makeMove, gameState}:GameStateRouteProps) {
     let calcWidth = ({ screenWidth, screenHeight }: any) => {
@@ -15,11 +48,8 @@ export function Game({thisUser, makeMove, gameState}:GameStateRouteProps) {
             return 500;
         }
     }
-
-    console.log(gameState?.whitePlayer.username);
-    console.log(thisUser?.username);
-    console.log(gameState?.whiteRemainingTimeMs);
-    console.log(gameState?.blackRemainingTimeMs);
+    const isUserWhite=gameState?.whitePlayer.username===thisUser?.username;
+    const isPlayersTurn=(isUserWhite&&gameState.playerTurn==="white")||((!isUserWhite)&&gameState.playerTurn==="black");
 
     let onDrop = ({ sourceSquare, targetSquare, piece }:any)=> {
         console.log(sourceSquare);
@@ -31,16 +61,20 @@ export function Game({thisUser, makeMove, gameState}:GameStateRouteProps) {
             promotion: "q",
             piece: piece
         }
-        makeMove(newMove);
+        if(isPlayersTurn){
+            makeMove(newMove);
+        }
     }
-
+    const player1Time=isUserWhite ? gameState?.blackRemainingTimeMs:gameState?.whiteRemainingTimeMs;
+    const player2Time=isUserWhite ? gameState?.whiteRemainingTimeMs:gameState?.blackRemainingTimeMs;
+    const player1TurnStart=isPlayersTurn ? null:new Date(gameState.movingPlayerTurnStartTime);
+    const player2TurnStart=isPlayersTurn ? new Date(gameState.movingPlayerTurnStartTime):null;
     // Display the chess board
     return (
         <div className="container" id="typehead" >
             <div className="row">
                 <div className="col">
-                    <img src={timer} className="img-fluid" alt="timer" />
-                    {gameState?.whitePlayer.username!==thisUser?.username ? gameState?.whiteRemainingTimeMs:gameState?.blackRemainingTimeMs}
+                    <ChessTimer timeRemainingMs={player1Time} timeTurnStarted={player1TurnStart} />
                 </div>
             </div>
 
@@ -57,8 +91,7 @@ export function Game({thisUser, makeMove, gameState}:GameStateRouteProps) {
 
             <div className="row">
                 <div className="col">
-                    <img src={timer} className="img-fluid" alt="timer" />
-                    {gameState?.whitePlayer.username===thisUser?.username ? gameState?.whiteRemainingTimeMs:gameState?.blackRemainingTimeMs}
+                    <ChessTimer timeRemainingMs={player2Time} timeTurnStarted={player2TurnStart} />
                 </div>
             </div>
         </div>
