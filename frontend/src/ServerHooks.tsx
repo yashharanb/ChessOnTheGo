@@ -252,14 +252,14 @@ export function useChessPlayerState(onError:ErrorFunc):ChessPlayerHookReturn{
 
 
 
-    const queueForGame=useCallback(throttle((timeLimit:number)=>{
+    const queueForGame=useCallback((timeLimit:number)=>{
         if(thisUser!==null){
             setGameState(null);
             sendIoMessage(connectionRef.current,"play_game",timeLimit.toString());
         }
-    },2000),[thisUser]);
+    },[thisUser]);
 
-    const makeMove=useCallback(throttle((move:InputChessMove)=>{
+    const makeMove=useCallback((move:InputChessMove)=>{
             if(gameState===null){
                 throw new Error("error, cannot make move when no game.")
             }
@@ -278,7 +278,7 @@ export function useChessPlayerState(onError:ErrorFunc):ChessPlayerHookReturn{
             else{
                 sendIoMessage(connectionRef.current,"make_move",JSON.stringify(move));
             }
-    },2000),[gameState, thisUser]);
+    },[gameState, thisUser]);
 
     if(thisUser!==null&&gameState!==null&&thisUser.state==="game"&&!isPlayersTurn(gameState,thisUser)){
         const gameStateWithNoMoves:GameState={...gameState,possibleMoves:[]};

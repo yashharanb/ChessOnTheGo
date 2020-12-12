@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 export function Queue() {
     return (
         <div>
-            <div className="container">
+            <div className="container queue">
                 <div className="row">
                     <div className="col">
                         <div className="jumbotron brown-border content-container">

@@ -22,6 +22,10 @@ body, html {
   color: #000000;
 }
 
+.queue {
+  margin-top: 20%;
+}
+
 .content-container {
   background-color: #ffe3ae !important;
 }
