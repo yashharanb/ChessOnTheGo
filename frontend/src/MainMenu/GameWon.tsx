@@ -37,28 +37,29 @@ export function GameWon() {
   let totalDrawCounter = 0;
 
   if(stats){
-    if(thisUser?.username === stats[0].blackPlayer.username){
-      if(stats[0].winner === "black"){
+    for( let i = 0; i<stats.length; i++){
+    if(thisUser?.username === stats[i].blackPlayer.username){
+      if(stats[i].winner === "black"){
           totalWinCounter = totalWinCounter+1;
       }
-      else if(stats[0].winner === "white"){
+      else if(stats[i].winner === "white"){
         totalLossCounter = totalLossCounter+1;
       }
       else{
         totalDrawCounter = totalDrawCounter+1;
       }
     }else{
-      if(stats[0].winner === "white"){
+      if(stats[i].winner === "white"){
           totalWinCounter = totalWinCounter+1;
       }
-      else if(stats[0].winner === "black"){
+      else if(stats[i].winner === "black"){
         totalLossCounter = totalLossCounter+1;
       }
       else{
         totalDrawCounter = totalDrawCounter+1;
       }
     }
-    console.log(totalWinCounter);
+  }
   }
 
   // Display the statistics of the player when they win a game
@@ -89,6 +90,9 @@ export function GameWon() {
                     </p>
                     <p className="lead">
                         Total Draws: {totalDrawCounter}
+                    </p>
+                    <p className="lead">
+                        ELO Score: {thisUser?.elo}
                     </p>
                 </div>
             </div>

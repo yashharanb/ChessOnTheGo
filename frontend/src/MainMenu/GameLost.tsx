@@ -1,9 +1,9 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {BrowserRouter as Router,Switch, Route,Link} from "react-router-dom";
 import loseBanner from '../images/loseBanner.png';
 import lose from '../images/lose.svg';
-import { useChessPlayerState } from "../ServerHooks";
+import { useChessPlayerState,HistoricalGame , getPlayerStats} from "../ServerHooks";
 
 export function GameLost() {
   const {gameState,thisUser,makeMove,queueForGame} = useChessPlayerState(console.log);
@@ -17,6 +17,48 @@ export function GameLost() {
       opponentName = gameState.whitePlayer.username;
       userTime = gameState.blackRemainingTimeMs;
     }
+  }
+
+  const [stats,setStats]=useState<null|HistoricalGame[]>(null);
+  // Display the user login screen
+  useEffect(()=>{
+    const func=async()=>{
+      const playerStats=await getPlayerStats();
+      setStats(playerStats);
+    }
+    func()
+  },[])
+
+  console.log(stats);
+
+  let totalWinCounter = 0;
+  let totalLossCounter = 0;
+  let totalDrawCounter = 0;
+
+  if(stats){
+    for( let i = 0; i<stats.length; i++){
+    if(thisUser?.username === stats[i].blackPlayer.username){
+      if(stats[i].winner === "black"){
+          totalWinCounter = totalWinCounter+1;
+      }
+      else if(stats[i].winner === "white"){
+        totalLossCounter = totalLossCounter+1;
+      }
+      else{
+        totalDrawCounter = totalDrawCounter+1;
+      }
+    }else{
+      if(stats[i].winner === "white"){
+          totalWinCounter = totalWinCounter+1;
+      }
+      else if(stats[i].winner === "black"){
+        totalLossCounter = totalLossCounter+1;
+      }
+      else{
+        totalDrawCounter = totalDrawCounter+1;
+      }
+    }
+  }
   }
 
   // Display the statistics of the player when they lose a game
@@ -38,13 +80,16 @@ export function GameLost() {
                         Time: {userTime} Minutes
                     </p>
                     <p className="lead">
-                        Total Wins: {2}
+                        Total Wins: {totalWinCounter}
                     </p>
                     <p className="lead">
-                        Total Wins: {2}
+                        Total Loss: {totalLossCounter}
                     </p>
                     <p className="lead">
-                        Total Draws: {3}
+                        Total Draws: {totalDrawCounter}
+                    </p>
+                    <p className="lead">
+                        ELO Score: {thisUser?.elo}
                     </p>
                     <div className = "row">
                     <div className = "col">
