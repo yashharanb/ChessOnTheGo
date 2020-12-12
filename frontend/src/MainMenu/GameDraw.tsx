@@ -1,10 +1,33 @@
-import React from 'react';
+import React,{useEffect} from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {BrowserRouter as Router,Switch, Route,Link} from "react-router-dom";
 import drawBanner from '../images/drawBanner.png';
-import chessGame from '../images/chess-game.svg'
+import chessGame from '../images/chess-game.svg';
+import { useChessPlayerState } from "../ServerHooks";
+
 
 export function GameDraw() {
+
+  const {gameState,thisUser,makeMove,queueForGame} = useChessPlayerState(console.log);
+  let opponentName = '';
+  let userTime;
+
+  if(gameState){
+    if(thisUser?.username === gameState.whitePlayer.username){
+      opponentName = gameState.blackPlayer.username;
+      userTime = gameState.whiteRemainingTimeMs;
+    }else{
+      opponentName = gameState.whitePlayer.username;
+      userTime = gameState.blackRemainingTimeMs;
+    }
+  }
+
+  useEffect(()=>{
+    queueForGame(2);
+  },[]);
+
+
+
   // Display the player statistics if the game is a draw
   return(
     <div className="container">
@@ -18,10 +41,10 @@ export function GameDraw() {
             <div className="col" >
                 <div className="border border-dark content-container bg-white text-dark" >
                     <p className="lead">
-                        Player 1 Vs. Player 2
+                        {thisUser?.username} Vs. {gameState?.whitePlayer.username}
                     </p>
                     <p className="lead">
-                        Time: 25:00 Minutes
+                        Time: {userTime} Minutes
                     </p>
                     <p className="lead">
                         Total Wins: {2}
@@ -52,8 +75,7 @@ export function GameDraw() {
           </div>
         </div>
     </div>
-
-
   );
+
 
 }

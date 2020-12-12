@@ -1,58 +1,34 @@
-<div class="row mt-5">
-	<div class="col-md-6 m-auto">
-		<div class="card card-body">
-			<!-- <h1 class="text-center mb-3"><i class="fas fa-user-plus"></i> Register</h1> -->
-			<img src="../logo.png" alt="logo"> <!-- using the "app.use(express.static("public"));" from app.js-->
-			<h2>Create Account</h2>
-			<form action="/users/registration" method="POST">
-				<div class="form-group">
-					<label for="email">Email</label>
-					<input
-						type="email"
-						id="email"
-						name="email"
-						class="form-control"
-						placeholder="Email"
-						value="<%= typeof email != 'undefined' ? email : '' %>"
-					/>
-				</div>
-				<div class="form-group">
-					<label for="name">Username</label>
-					<input
-						type="username"
-						id="username"
-						name="username"
-						class="form-control"
-						placeholder="Username"
-						value="<%= typeof username != 'undefined' ? username : '' %>" 
-					/>
-				</div>
-				<div class="form-group">
-					<label for="password">Password</label>
-					<input
-						type="password"
-						id="password"
-						name="password"
-						class="form-control"
-						placeholder="Password"
-						value="<%= typeof password != 'undefined' ? password : '' %>"
-					/>
-				</div>
-				<div class="form-group">
-					<label for="password2">Confirm Password</label>
-					<input
-						type="password"
-						id="password2"
-						name="password2"
-						class="form-control"
-						placeholder="Confirm Password"
-						value="<%= typeof password2 != 'undefined' ? password2 : '' %>"
-					/>
-				</div>
-				<button type="submit" class="btn btn-primary btn-block">Register</button>
-			</form>
-			<p class="lead mt-4"><a href="/">Sign in to Chess on the Go instead</a></p>
-			<%- include('partials/messages') %>
+<div class="container">
+	<form action="/users/registration" method="POST">
+		<div class = "logo">
+			<img src='../logo.png' class="img-fluid" alt="logo" />
+
 		</div>
-	</div>
+		<div class="form-group">
+			<div class="button flex-parent">
+				<h1> Register Here </h1>
+			</div>
+			<%- include('partials/messages') %>
+			<input type="email" class="form-control" id="email" name="email" placeholder="Enter email" value="<%= typeof email != 'undefined' ? email : '' %>" ></input>
+		</div>
+		<div class="form-group">
+			<input type="username" class="form-control" id="username" name="username" placeholder="Enter Username" value="<%= typeof username != 'undefined' ? username : '' %>" ></input>
+		</div>
+
+		<div class="form-group" >
+
+			<input type="password" name="password" class="form-control" id="password" placeholder="Password" value="<%= typeof password != 'undefined' ? password : '' %>" ></input>
+		</div>
+		<div class="form-group" >
+			<input type="password" name="password2" class="form-control" id="password2" placeholder="Confirm Password" value="<%= typeof password2 != 'undefined' ? password2 : '' %>" ></input>
+
+		</div>
+
+		<div class="button flex-parent">
+			<a href="/" class="btn btn-secondary " to="/" >Go to Login</a>
+		</div>
+		<div class="button flex-parent">
+			<button type="submit"  class="btn btn-secondary ">Register</button>
+		</div>
+	</form>
 </div>

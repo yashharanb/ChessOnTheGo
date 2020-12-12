@@ -15,7 +15,7 @@ import {
 // This page displays the player's general game stats, and allows users to play a new game or view detailed stats.
 // TODO: replace the 4s with actual data from the db
 export function PlayerMainMenu() {
-
+// Use a use effect and get request
     return (
         <div className="container player_menu">
             <div className="row">
@@ -36,6 +36,10 @@ export function PlayerMainMenu() {
                         <p className="lead">
                             <FontAwesomeIcon icon="chess-king" className="chess-king fa-3x"/>
                             Games tied: {4}
+                        </p>
+                        <p className="lead">
+                            <FontAwesomeIcon icon="chess-king" className="chess-king fa-3x"/>
+                            ELO Score: {4}
                         </p>
                     </div>
                 </div>

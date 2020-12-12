@@ -142,15 +142,6 @@ body, html {
 
 }
 
-@media screen and (max-width: 650px) {
-  .banner {
-    width: 40%;
-    height: 20%;
-    margin-top: 2em;
-  }
-
-}
-
 .player_menu {
   margin-top: 5em;
 }

@@ -2,15 +2,10 @@ import React from 'react';
 import ChessBoard from 'chessboardjsx';
 import { useWindowResize } from "beautiful-react-hooks";
 import timer from '../images/timer.png';
+import { useChessPlayerState } from "../ServerHooks";
 
 const { useState } = React;
 export function Game() {
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-
-  useWindowResize((event: React.SyntheticEvent) => {
-    setWindowWidth(window.innerWidth);
-  });
-
 
 
 
@@ -21,11 +16,9 @@ export function Game() {
     }else{
       return 500;
     }
-
   }
 
-
-
+  const {gameState,thisUser,makeMove,queueForGame} = useChessPlayerState(console.log);
 
 // Display the chess board
   return(
@@ -39,7 +32,8 @@ export function Game() {
 
       <div className="row" >
         <div className="col p-0"  >
-          <ChessBoard position="start" calcWidth={calcWidth}/>
+          <ChessBoard position="start" calcWidth={calcWidth}
+                      orientation={gameState?.playerTurn}/>
         </div>
       </div>
 

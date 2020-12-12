@@ -21,9 +21,7 @@ export function LoginPage(){
   },[])
   console.log(playerState)
   return (
-      <>
-        <div>{JSON.stringify(stats)}</div>
-
+    <form  noValidate={validated}  action="http://localhost:8000/users/login" method="POST">
       <div className = "logo">
         <p></p>
         <img src={logo} className="img-fluid" alt="logo" />
@@ -43,6 +41,6 @@ export function LoginPage(){
           </div>
 
         </fieldset>
-      </>
+    </form>
     );
 }

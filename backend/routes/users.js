@@ -20,7 +20,6 @@ function users(refreshUsers) {
 //for login page handling
 	const passport = require('passport');
 
-//Registration handler
 	router.post('/registration', (req, res) => {
 		const obj = JSON.parse(JSON.stringify(req.body)); // console.log(req.body) throws [Object: null prototype] error. This fixes it. From: https://stackoverflow.com/questions/56298481/how-to-fix-object-null-prototype-title-product
 		console.log(obj); //for debugging

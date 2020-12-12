@@ -3,8 +3,22 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {BrowserRouter as Router,Switch, Route,Link} from "react-router-dom";
 import loseBanner from '../images/loseBanner.png';
 import lose from '../images/lose.svg';
+import { useChessPlayerState } from "../ServerHooks";
 
 export function GameLost() {
+  const {gameState,thisUser,makeMove,queueForGame} = useChessPlayerState(console.log);
+  let opponentName = '';
+  let userTime;
+  if(gameState){
+    if(thisUser?.username === gameState.whitePlayer.username){
+      opponentName = gameState.blackPlayer.username;
+      userTime = gameState.whiteRemainingTimeMs;
+    }else{
+      opponentName = gameState.whitePlayer.username;
+      userTime = gameState.blackRemainingTimeMs;
+    }
+  }
+
   // Display the statistics of the player when they lose a game
   return(
     <div className="container">
@@ -18,10 +32,10 @@ export function GameLost() {
             <div className="col" >
                 <div className="border border-dark content-container bg-white text-dark" style={{position: "relative", left: 0, top: 0}} >
                     <p className="lead">
-                        Player 1 Vs. Player 2
+                        {thisUser?.username} Vs. {opponentName}
                     </p>
                     <p className="lead">
-                        Time: 25:00 Minutes
+                        Time: {userTime} Minutes
                     </p>
                     <p className="lead">
                         Total Wins: {2}

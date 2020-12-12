@@ -1,35 +1,26 @@
-<div class="row mt-5">
-	<div class="col-md-6 m-auto">
-		<div class="card card-body">
-			<!-- <h1 class="text-center mb-3"><i class="fas fa-sign-in-alt"></i>  Login</h1> -->
-			<img src="logo.png" alt="logo"> <!-- using the "app.use(express.static("public"));" from app.js-->
-			<%- include('partials/messages') %>
-			<form action="/users/login" method="POST"> <!-- must keep the /users/login so that the router.post in users.js in view can see it when you press the login button -->
+
+<div class="container">
+
+			<form  action="/users/login" method="POST">
+				<div class = "logo">
+
+					<img src='logo.png' class="img-fluid" alt="logo" />
+				</div>
+				<%- include('partials/messages') %>
+
 				<div class="form-group">
-					<label for="email">Email</label>
-					<input
-						type="email"
-						id="email"
-						name="email"
-						class="form-control"
-						placeholder="Enter Email"
-					/>
+					<input required type="email" class="form-control" id="email" name="email" placeholder="Enter email" ></input>
 				</div>
 				<div class="form-group">
-					<label for="password">Password</label>
-					<input
-						type="password"
-						id="password"
-						name="password"
-						class="form-control"
-						placeholder="Enter Password"
-					/>
+					<input required type="password" id="password" name="password" class="form-control" placeholder="Password"  ></input>
 				</div>
-				<button type="submit" class="btn btn-primary btn-block">Login</button>
+				<div class="button flex-parent">
+					<button type="submit" id="login" class="btn btn-secondary">Login</button>
+				</div>
+				<div class="button flex-parent">
+
+				<a class="btn btn-secondary" href="/users/registration">Create a new Account</a>
+				</div>
 			</form>
-			<p class="lead mt-4">
-				<a href="/users/registration">Create a New Account</a>
-			</p>
-		</div>
-	</div>
+
 </div>
