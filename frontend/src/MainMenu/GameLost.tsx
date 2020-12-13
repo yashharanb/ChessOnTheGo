@@ -9,24 +9,18 @@ import { GameStateRouteProps } from './GameStateRoute';
 export function GameLost({thisUser,makeMove, gameState}:GameStateRouteProps) {
 
   let opponentName = '';
-  let duration;
-  let durationTimeDateFormat;
   let opponentTime;
-  let opponentDuration;
+  let userTime;
 
   if(gameState){
     if(thisUser?.username === gameState.whitePlayer.username){
       opponentName = gameState.blackPlayer.username;
-      opponentTime = new Date(gameState.blackRemainingTimeMs);
-      opponentDuration = opponentTime.getUTCMinutes() + ':' + opponentTime.getUTCSeconds();
-      durationTimeDateFormat = new Date(gameState.whiteRemainingTimeMs);
-      duration = durationTimeDateFormat.getUTCMinutes() + ':' + durationTimeDateFormat.getUTCSeconds();
+      opponentTime = new Date(gameState.blackRemainingTimeMs).toLocaleTimeString('en-US', { minute: "numeric", second: "numeric" });
+      userTime = new Date(gameState.whiteRemainingTimeMs).toLocaleTimeString('en-US', { minute: "numeric", second: "numeric" });
     }else{
       opponentName = gameState.whitePlayer.username;
-      opponentTime = new Date(gameState.whiteRemainingTimeMs);
-      opponentDuration = opponentTime.getUTCMinutes() + ':' + opponentTime.getUTCSeconds();
-      durationTimeDateFormat = new Date(gameState.blackRemainingTimeMs);
-      duration = durationTimeDateFormat.getUTCMinutes() + ':' + durationTimeDateFormat.getUTCSeconds();
+      opponentTime = new Date(gameState.whiteRemainingTimeMs).toLocaleTimeString('en-US', { minute: "numeric", second: "numeric" });
+      userTime = new Date(gameState.blackRemainingTimeMs).toLocaleTimeString('en-US', { minute: "numeric", second: "numeric" });
     }
   }
 
@@ -94,10 +88,10 @@ export function GameLost({thisUser,makeMove, gameState}:GameStateRouteProps) {
                         {thisUser?.username} Vs. {opponentName}
                     </p>
                     <p className="lead">
-                        {thisUser?.username} Time Remaining: {duration} Minutes
+                        {thisUser?.username} Time Remaining: {userTime} Minutes
                     </p>
                     <p className="lead">
-                        {opponentName} Time Remaining: {opponentDuration} Minutes
+                        {opponentName} Time Remaining: {opponentTime} Minutes
                     </p>
                     <p className="lead">
                         Total Wins: {totalWinCounter}
