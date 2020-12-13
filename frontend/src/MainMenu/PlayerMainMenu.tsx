@@ -53,6 +53,11 @@ if(stats){
   }
 }
 }
+
+let elo;
+if(thisUser){
+  elo = Math.round(thisUser.elo);
+}
     return (
         <div className="container player_menu">
             <div className="row">
@@ -76,7 +81,7 @@ if(stats){
                         </p>
                         <p className="lead">
                             <FontAwesomeIcon icon="chess-king" className="chess-king fa-3x"/>
-                            ELO Score: {thisUser?.elo}
+                            ELO Score: {elo}
                         </p>
                     </div>
                 </div>

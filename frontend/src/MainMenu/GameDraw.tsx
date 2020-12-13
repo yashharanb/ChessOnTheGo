@@ -3,28 +3,33 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {BrowserRouter as Router,Switch, Route,Link} from "react-router-dom";
 import drawBanner from '../images/drawBanner.png';
 import chessGame from '../images/chess-game.svg';
-import { useChessPlayerState,HistoricalGame , getPlayerStats} from "../ServerHooks";
+import { HistoricalGame , getPlayerStats} from "../ServerHooks";
+import { GameStateRouteProps } from './GameStateRoute';
 
+export function GameDraw({thisUser,makeMove, gameState}:GameStateRouteProps) {
 
-export function GameDraw() {
-
-  const {gameState,thisUser,makeMove,queueForGame} = useChessPlayerState(console.log);
   let opponentName = '';
-  let userTime;
+  let duration;
+  let durationTimeDateFormat;
+  let opponentTime;
+  let opponentDuration;
 
   if(gameState){
     if(thisUser?.username === gameState.whitePlayer.username){
       opponentName = gameState.blackPlayer.username;
-      userTime = gameState.whiteRemainingTimeMs;
+      opponentTime = new Date(gameState.blackRemainingTimeMs);
+      opponentDuration = opponentTime.getUTCMinutes() + ':' + opponentTime.getUTCSeconds();
+      durationTimeDateFormat = new Date(gameState.whiteRemainingTimeMs);
+      duration = durationTimeDateFormat.getUTCMinutes() + ':' + durationTimeDateFormat.getUTCSeconds();
     }else{
       opponentName = gameState.whitePlayer.username;
-      userTime = gameState.blackRemainingTimeMs;
+      opponentTime = new Date(gameState.whiteRemainingTimeMs);
+      opponentDuration = opponentTime.getUTCMinutes() + ':' + opponentTime.getUTCSeconds();
+      durationTimeDateFormat = new Date(gameState.blackRemainingTimeMs);
+      duration = durationTimeDateFormat.getUTCMinutes() + ':' + durationTimeDateFormat.getUTCSeconds();
     }
   }
 
-  useEffect(()=>{
-    queueForGame(2);
-  },[]);
 
   const [stats,setStats]=useState<null|HistoricalGame[]>(null);
   // Display the user login screen
@@ -54,6 +59,7 @@ export function GameDraw() {
       else{
         totalDrawCounter = totalDrawCounter+1;
       }
+
     }else{
       if(stats[i].winner === "white"){
           totalWinCounter = totalWinCounter+1;
@@ -68,6 +74,10 @@ export function GameDraw() {
   }
   }
 
+  let elo;
+  if(thisUser){
+    elo = Math.round(thisUser.elo);
+  }
   // Display the player statistics if the game is a draw
   return(
     <div className="container">
@@ -81,10 +91,13 @@ export function GameDraw() {
             <div className="col" >
                 <div className="border border-dark content-container bg-white text-dark" >
                     <p className="lead">
-                        {thisUser?.username} Vs. {gameState?.whitePlayer.username}
+                        {thisUser?.username} Vs. {opponentName}
                     </p>
                     <p className="lead">
-                        Time: {userTime} Minutes
+                        {thisUser?.username} Time Remaining: {duration} Minutes
+                    </p>
+                    <p className="lead">
+                        {opponentName} Time Remaining: {opponentDuration} Minutes
                     </p>
                     <p className="lead">
                         Total Wins: {totalWinCounter}
@@ -96,7 +109,7 @@ export function GameDraw() {
                         Total Draws: {totalDrawCounter}
                     </p>
                     <p className="lead">
-                        ELO Score: {thisUser?.elo}
+                        ELO Score: {elo}
                     </p>
                 </div>
             </div>
@@ -109,9 +122,6 @@ export function GameDraw() {
         <p></p>
         <div className="container" style={{width:"40%"}}>
         <div className="row"  >
-            <div className="col " >
-              <Link className="btn btn-secondary " to="./Game" >New Game</Link>
-            </div>
             <div className="col"  >
               <Link className="btn btn-secondary " to="./menu" >Main Menu</Link>
             </div>

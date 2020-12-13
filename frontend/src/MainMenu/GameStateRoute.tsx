@@ -11,13 +11,13 @@ export function GameStateRoute({thisUser, makeMove, gameState}:GameStateRoutePro
     let userColor = gameState?.whitePlayer.username===thisUser?.username ? "white":"black";
 
     if(gameState.winLoss && gameState.winLoss.gameOverState=="draw"){
-        toRender = <GameDraw/>
+        toRender = <GameDraw thisUser={thisUser} makeMove={makeMove} gameState={gameState}/>
     }
     else if(gameState.winLoss && gameState.winLoss.winner===userColor){
-        toRender = <GameWon/>
+        toRender = <GameWon thisUser={thisUser} makeMove={makeMove} gameState={gameState}/>
     }
     else if(gameState.winLoss && gameState.winLoss.winner!==userColor){
-        toRender = <GameLost/>
+        toRender = <GameLost thisUser={thisUser} makeMove={makeMove} gameState={gameState}/>
     }
     else{
         toRender = <Game thisUser={thisUser} makeMove={makeMove} gameState={gameState}/>

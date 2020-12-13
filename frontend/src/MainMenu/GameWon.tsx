@@ -3,20 +3,29 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {BrowserRouter as Router,Switch, Route,Link} from "react-router-dom";
 import winningBanner from '../images/winningBanner.png';
 import celebration from '../images/celebrate.svg';
-import { useChessPlayerState,HistoricalGame , getPlayerStats} from "../ServerHooks";
+import { GameStateRouteProps } from './GameStateRoute';
+import { HistoricalGame , getPlayerStats} from "../ServerHooks";
 
-export function GameWon() {
+export function GameWon({thisUser,makeMove, gameState}:GameStateRouteProps) {
 
-  const {gameState,thisUser,makeMove,queueForGame} = useChessPlayerState(console.log);
   let opponentName = '';
-  let userTime;
+  let duration;
+  let durationTimeDateFormat;
+  let opponentTime;
+  let opponentDuration;
   if(gameState){
     if(thisUser?.username === gameState.whitePlayer.username){
       opponentName = gameState.blackPlayer.username;
-      userTime = gameState.whiteRemainingTimeMs;
+      opponentTime = new Date(gameState.blackRemainingTimeMs);
+      opponentDuration = opponentTime.getUTCMinutes() + ':' + opponentTime.getUTCSeconds();
+      durationTimeDateFormat = new Date(gameState.whiteRemainingTimeMs);
+      duration = durationTimeDateFormat.getUTCMinutes() + ':' + durationTimeDateFormat.getUTCSeconds();
     }else{
       opponentName = gameState.whitePlayer.username;
-      userTime = gameState.blackRemainingTimeMs;
+      opponentTime = new Date(gameState.whiteRemainingTimeMs);
+      opponentDuration = opponentTime.getUTCMinutes() + ':' + opponentTime.getUTCSeconds();
+      durationTimeDateFormat = new Date(gameState.blackRemainingTimeMs);
+      duration = durationTimeDateFormat.getUTCMinutes() + ':' + durationTimeDateFormat.getUTCSeconds();
     }
   }
 
@@ -35,6 +44,7 @@ export function GameWon() {
   let totalWinCounter = 0;
   let totalLossCounter = 0;
   let totalDrawCounter = 0;
+
 
   if(stats){
     for( let i = 0; i<stats.length; i++){
@@ -62,6 +72,10 @@ export function GameWon() {
   }
   }
 
+  let elo;
+  if(thisUser){
+    elo = Math.round(thisUser.elo);
+  }
   // Display the statistics of the player when they win a game
   return(
 
@@ -80,7 +94,10 @@ export function GameWon() {
                         {thisUser?.username} Vs. {opponentName}
                     </p>
                     <p className="lead">
-                        Time: {userTime} Minutes
+                        {thisUser?.username} Time Remaining: {duration} Minutes
+                    </p>
+                    <p className="lead">
+                        {opponentName} Time Remaining: {opponentDuration} Minutes
                     </p>
                     <p className="lead">
                         Total Wins: {totalWinCounter}
@@ -92,7 +109,7 @@ export function GameWon() {
                         Total Draws: {totalDrawCounter}
                     </p>
                     <p className="lead">
-                        ELO Score: {thisUser?.elo}
+                        ELO Score: {elo}
                     </p>
                 </div>
             </div>
@@ -105,9 +122,6 @@ export function GameWon() {
         <p></p>
         <div className="container" style={{width:"40%"}}>
         <div className="row"  >
-            <div className="col " >
-              <Link className="btn btn-secondary " to="./Game" >New Game</Link>
-            </div>
             <div className="col"  >
               <Link className="btn btn-secondary " to="./menu" >Main Menu</Link>
             </div>

@@ -3,19 +3,30 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {BrowserRouter as Router,Switch, Route,Link} from "react-router-dom";
 import loseBanner from '../images/loseBanner.png';
 import lose from '../images/lose.svg';
-import { useChessPlayerState,HistoricalGame , getPlayerStats} from "../ServerHooks";
+import { HistoricalGame , getPlayerStats} from "../ServerHooks";
+import { GameStateRouteProps } from './GameStateRoute';
 
-export function GameLost() {
-  const {gameState,thisUser,makeMove,queueForGame} = useChessPlayerState(console.log);
+export function GameLost({thisUser,makeMove, gameState}:GameStateRouteProps) {
+
   let opponentName = '';
-  let userTime;
+  let duration;
+  let durationTimeDateFormat;
+  let opponentTime;
+  let opponentDuration;
+
   if(gameState){
     if(thisUser?.username === gameState.whitePlayer.username){
       opponentName = gameState.blackPlayer.username;
-      userTime = gameState.whiteRemainingTimeMs;
+      opponentTime = new Date(gameState.blackRemainingTimeMs);
+      opponentDuration = opponentTime.getUTCMinutes() + ':' + opponentTime.getUTCSeconds();
+      durationTimeDateFormat = new Date(gameState.whiteRemainingTimeMs);
+      duration = durationTimeDateFormat.getUTCMinutes() + ':' + durationTimeDateFormat.getUTCSeconds();
     }else{
       opponentName = gameState.whitePlayer.username;
-      userTime = gameState.blackRemainingTimeMs;
+      opponentTime = new Date(gameState.whiteRemainingTimeMs);
+      opponentDuration = opponentTime.getUTCMinutes() + ':' + opponentTime.getUTCSeconds();
+      durationTimeDateFormat = new Date(gameState.blackRemainingTimeMs);
+      duration = durationTimeDateFormat.getUTCMinutes() + ':' + durationTimeDateFormat.getUTCSeconds();
     }
   }
 
@@ -47,6 +58,7 @@ export function GameLost() {
       else{
         totalDrawCounter = totalDrawCounter+1;
       }
+
     }else{
       if(stats[i].winner === "white"){
           totalWinCounter = totalWinCounter+1;
@@ -57,10 +69,15 @@ export function GameLost() {
       else{
         totalDrawCounter = totalDrawCounter+1;
       }
+
     }
   }
   }
 
+  let elo;
+  if(thisUser){
+    elo = Math.round(thisUser.elo);
+  }
   // Display the statistics of the player when they lose a game
   return(
     <div className="container">
@@ -77,7 +94,10 @@ export function GameLost() {
                         {thisUser?.username} Vs. {opponentName}
                     </p>
                     <p className="lead">
-                        Time: {userTime} Minutes
+                        {thisUser?.username} Time Remaining: {duration} Minutes
+                    </p>
+                    <p className="lead">
+                        {opponentName} Time Remaining: {opponentDuration} Minutes
                     </p>
                     <p className="lead">
                         Total Wins: {totalWinCounter}
@@ -89,7 +109,7 @@ export function GameLost() {
                         Total Draws: {totalDrawCounter}
                     </p>
                     <p className="lead">
-                        ELO Score: {thisUser?.elo}
+                        ELO Score: {elo}
                     </p>
                     <div className = "row">
                     <div className = "col">
@@ -103,9 +123,6 @@ export function GameLost() {
         <p></p>
         <div className="container" style={{width:"40%"}}>
         <div className="row"  >
-            <div className="col " >
-              <Link className="btn btn-secondary " to="./Game" >New Game</Link>
-            </div>
             <div className="col"  >
               <Link className="btn btn-secondary " to="./menu" >Main Menu</Link>
             </div>

@@ -88,12 +88,17 @@ export function Game({thisUser, makeMove, gameState}:GameStateRouteProps) {
    
     // Set CSS for squares that should indicate a possible move
     const squareStyles=Object.fromEntries(highlightedSquares.map(square => [square, {background:"radial-gradient(circle, #595447 36%, transparent 40%)",borderRadius: "50%"}]))
-    
+
+    const opponentName=isUserWhite ? gameState.blackPlayer.username:gameState.whitePlayer.username;
+
     // Display the chess board
     return (
         <div className="container" id="typehead" >
             <div className="row">
                 <div className="col">
+                  <div className = "col">
+                    {opponentName}
+                  </div>
                     <ChessTimer timeRemainingMs={player1Time} timeTurnStarted={player1TurnStart} />
                 </div>
             </div>
@@ -115,6 +120,9 @@ export function Game({thisUser, makeMove, gameState}:GameStateRouteProps) {
             <div className="row">
                 <div className="col">
                     <ChessTimer timeRemainingMs={player2Time} timeTurnStarted={player2TurnStart} />
+                    <div className = "col">
+                      {thisUser.username}
+                    </div>
                 </div>
             </div>
         </div>
