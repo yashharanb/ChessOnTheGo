@@ -9,7 +9,7 @@ export function QueueOrGame() {
     // Change state of user to queue for a 30min game
     useEffect(()=>{
         if(userExists){
-            queueForGame(1.8e6);
+            queueForGame(600000);
         }
     },[userExists]);
 

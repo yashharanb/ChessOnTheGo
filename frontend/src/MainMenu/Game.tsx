@@ -1,8 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import Chessboard from 'chessboardjsx';
-import { useWindowResize } from "beautiful-react-hooks";
 import timer from '../images/timer.png';
-import { InputChessMove, useChessPlayerState } from "../ServerHooks";
+import { InputChessMove } from "../ServerHooks";
 import { GameStateRouteProps } from './GameStateRoute';
 
 
@@ -16,7 +15,6 @@ function getDisplayedTimeFromRemainingTime(timeRemainingMs:number,timeTurnStarte
         const actualTimeRemaining=timeRemainingMs-timeElapsedSinceTurnStarted;
         return Math.round(actualTimeRemaining/1000);
     }
-    // const timeElapsedSinceTurnStarted=
 }
 /**
  *
@@ -40,6 +38,8 @@ function ChessTimer({timeRemainingMs,timeTurnStarted}:{timeRemainingMs:number,ti
 }
 
 export function Game({thisUser, makeMove, gameState}:GameStateRouteProps) {
+    const [highlightedSquares, setHighlightedSquares]=useState<string[]>([]);
+
     let calcWidth = ({ screenWidth, screenHeight }: any) => {
         if (document && document.getElementById('typehead')) {
             // @ts-ignore
@@ -51,10 +51,8 @@ export function Game({thisUser, makeMove, gameState}:GameStateRouteProps) {
     const isUserWhite=gameState?.whitePlayer.username===thisUser?.username;
     const isPlayersTurn=(isUserWhite&&gameState.playerTurn==="white")||((!isUserWhite)&&gameState.playerTurn==="black");
 
+    // When a chess piece is moved to a new square
     let onDrop = ({ sourceSquare, targetSquare, piece }:any)=> {
-        console.log(sourceSquare);
-        console.log(targetSquare);
-        console.log(piece);
         let newMove:InputChessMove = {
             from: sourceSquare,
             to: targetSquare,
@@ -65,10 +63,24 @@ export function Game({thisUser, makeMove, gameState}:GameStateRouteProps) {
             makeMove(newMove);
         }
     }
+
+    let onMouseOverSquare = (square: string) => {
+        const validMoves = gameState.possibleMoves.filter(move => move.from===square);
+        setHighlightedSquares(validMoves.map(move => move.to));
+    }
+
+    let onMouseOutSquare = () => {
+        setHighlightedSquares([]);
+    }
+
     const player1Time=isUserWhite ? gameState?.blackRemainingTimeMs:gameState?.whiteRemainingTimeMs;
     const player2Time=isUserWhite ? gameState?.whiteRemainingTimeMs:gameState?.blackRemainingTimeMs;
     const player1TurnStart=isPlayersTurn ? null:new Date(gameState.movingPlayerTurnStartTime);
     const player2TurnStart=isPlayersTurn ? new Date(gameState.movingPlayerTurnStartTime):null;
+   
+    // Set CSS for squares that should indicate a possible move
+    const squareStyles=Object.fromEntries(highlightedSquares.map(square => [square, {background:"radial-gradient(circle, #595447 36%, transparent 40%)",borderRadius: "50%"}]))
+    
     // Display the chess board
     return (
         <div className="container" id="typehead" >
@@ -84,7 +96,10 @@ export function Game({thisUser, makeMove, gameState}:GameStateRouteProps) {
                         position={gameState.fenString}
                         calcWidth={calcWidth}
                         orientation={gameState?.whitePlayer.username===thisUser?.username ? "white":"black"}
-                        onDrop={onDrop}            
+                        onDrop={onDrop}
+                        onMouseOverSquare={onMouseOverSquare}
+                        onMouseOutSquare={onMouseOutSquare} 
+                        squareStyles={squareStyles}           
                     />
                 </div>
             </div>
