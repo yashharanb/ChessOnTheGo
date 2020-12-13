@@ -3,19 +3,27 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {BrowserRouter as Router,Switch, Route,Link} from "react-router-dom";
 import loseBanner from '../images/loseBanner.png';
 import lose from '../images/lose.svg';
-import { useChessPlayerState,HistoricalGame , getPlayerStats} from "../ServerHooks";
+import { HistoricalGame , getPlayerStats} from "../ServerHooks";
+import { GameStateRouteProps } from './GameStateRoute';
 
-export function GameLost() {
-  const {gameState,thisUser,makeMove,queueForGame} = useChessPlayerState(console.log);
+export function GameLost({thisUser,makeMove, gameState}:GameStateRouteProps) {
+
   let opponentName = '';
   let userTime;
+  let durationTimeDateFormat;
+  let duration;
+
   if(gameState){
     if(thisUser?.username === gameState.whitePlayer.username){
       opponentName = gameState.blackPlayer.username;
-      userTime = gameState.whiteRemainingTimeMs;
+      userTime = 1800000 - gameState.whiteRemainingTimeMs;
+      durationTimeDateFormat = new Date(userTime);
+      duration = durationTimeDateFormat.getUTCMinutes() + ':' + durationTimeDateFormat.getUTCSeconds();
     }else{
       opponentName = gameState.whitePlayer.username;
-      userTime = gameState.blackRemainingTimeMs;
+      userTime = 1800000 - gameState.blackRemainingTimeMs;
+      durationTimeDateFormat = new Date(userTime);
+      duration = durationTimeDateFormat.getUTCMinutes() + ':' + durationTimeDateFormat.getUTCSeconds();
     }
   }
 
@@ -47,6 +55,7 @@ export function GameLost() {
       else{
         totalDrawCounter = totalDrawCounter+1;
       }
+
     }else{
       if(stats[i].winner === "white"){
           totalWinCounter = totalWinCounter+1;
@@ -57,10 +66,15 @@ export function GameLost() {
       else{
         totalDrawCounter = totalDrawCounter+1;
       }
+
     }
   }
   }
 
+  let elo;
+  if(thisUser){
+    elo = Math.round(thisUser.elo);
+  }
   // Display the statistics of the player when they lose a game
   return(
     <div className="container">
@@ -77,7 +91,7 @@ export function GameLost() {
                         {thisUser?.username} Vs. {opponentName}
                     </p>
                     <p className="lead">
-                        Time: {userTime} Minutes
+                        Time: {duration} Minutes
                     </p>
                     <p className="lead">
                         Total Wins: {totalWinCounter}
@@ -89,7 +103,7 @@ export function GameLost() {
                         Total Draws: {totalDrawCounter}
                     </p>
                     <p className="lead">
-                        ELO Score: {thisUser?.elo}
+                        ELO Score: {elo}
                     </p>
                     <div className = "row">
                     <div className = "col">

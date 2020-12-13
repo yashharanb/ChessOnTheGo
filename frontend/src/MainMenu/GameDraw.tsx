@@ -3,29 +3,30 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {BrowserRouter as Router,Switch, Route,Link} from "react-router-dom";
 import drawBanner from '../images/drawBanner.png';
 import chessGame from '../images/chess-game.svg';
-import { useChessPlayerState,HistoricalGame , getPlayerStats} from "../ServerHooks";
+import { HistoricalGame , getPlayerStats} from "../ServerHooks";
+import { GameStateRouteProps } from './GameStateRoute';
 
+export function GameDraw({thisUser,makeMove, gameState}:GameStateRouteProps) {
 
-export function GameDraw() {
-
-  const {gameState,thisUser,makeMove,queueForGame} = useChessPlayerState(console.log);
   let opponentName = '';
   let userTime;
+  let durationTimeDateFormat;
+  let duration;
 
   if(gameState){
     if(thisUser?.username === gameState.whitePlayer.username){
       opponentName = gameState.blackPlayer.username;
       userTime = gameState.whiteRemainingTimeMs;
+      durationTimeDateFormat = new Date(userTime);
+      duration = durationTimeDateFormat.getUTCMinutes() + ':' + durationTimeDateFormat.getUTCSeconds();
     }else{
       opponentName = gameState.whitePlayer.username;
       userTime = gameState.blackRemainingTimeMs;
+      durationTimeDateFormat = new Date(userTime);
+      duration = durationTimeDateFormat.getUTCMinutes() + ':' + durationTimeDateFormat.getUTCSeconds();
     }
   }
 
-  useEffect(()=>{
-    queueForGame(2);
-  },[]);
-console.log(thisUser?.state);
 
   const [stats,setStats]=useState<null|HistoricalGame[]>(null);
   // Display the user login screen
@@ -55,6 +56,7 @@ console.log(thisUser?.state);
       else{
         totalDrawCounter = totalDrawCounter+1;
       }
+
     }else{
       if(stats[i].winner === "white"){
           totalWinCounter = totalWinCounter+1;
@@ -69,6 +71,10 @@ console.log(thisUser?.state);
   }
   }
 
+  let elo;
+  if(thisUser){
+    elo = Math.round(thisUser.elo);
+  }
   // Display the player statistics if the game is a draw
   return(
     <div className="container">
@@ -82,10 +88,10 @@ console.log(thisUser?.state);
             <div className="col" >
                 <div className="border border-dark content-container bg-white text-dark" >
                     <p className="lead">
-                        {thisUser?.username} Vs. {gameState?.whitePlayer.username}
+                        {thisUser?.username} Vs. {opponentName}
                     </p>
                     <p className="lead">
-                        Time: {userTime} Minutes
+                        Time: {duration} Minutes
                     </p>
                     <p className="lead">
                         Total Wins: {totalWinCounter}
@@ -97,7 +103,7 @@ console.log(thisUser?.state);
                         Total Draws: {totalDrawCounter}
                     </p>
                     <p className="lead">
-                        ELO Score: {thisUser?.elo}
+                        ELO Score: {elo}
                     </p>
                 </div>
             </div>

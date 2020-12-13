@@ -54,8 +54,8 @@ export function PlayerStatistics() {
           durationTimeInSeconds = Date.parse(stats[i].endTime) - Date.parse(stats[i].startTime);
           durationTimeDateFormat = new Date(durationTimeInSeconds);
           duration = durationTimeDateFormat.getUTCMinutes() + ':' + durationTimeDateFormat.getUTCSeconds();
-          elo = stats[i].blackPlayerEloBefore;
-          opponentElo = stats[i].whitePlayerEloBefore;
+          elo = Math.round(stats[i].blackPlayerEloBefore);
+          opponentElo = Math.round(stats[i].whitePlayerEloBefore);
         }else{
           opponent = stats[i].blackPlayer.username;
           if(stats[i].winner === "white"){
@@ -72,8 +72,8 @@ export function PlayerStatistics() {
           durationTimeInSeconds = Date.parse(stats[i].endTime) - Date.parse(stats[i].startTime);
           durationTimeDateFormat = new Date(durationTimeInSeconds);
           duration = durationTimeDateFormat.getUTCMinutes() + ':' + durationTimeDateFormat.getUTCSeconds();
-          elo = stats[i].whitePlayerEloBefore;
-          opponentElo = stats[i].blackPlayerEloBefore;
+          elo = Math.round(stats[i].whitePlayerEloBefore);
+          opponentElo = Math.round(stats[i].blackPlayerEloBefore);
         }
         array.push({opponent: opponent, status: status, timestamp: timestamp, duration: duration, elo : elo, opponentElo: opponentElo});
       }

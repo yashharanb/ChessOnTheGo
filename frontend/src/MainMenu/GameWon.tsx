@@ -3,20 +3,26 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {BrowserRouter as Router,Switch, Route,Link} from "react-router-dom";
 import winningBanner from '../images/winningBanner.png';
 import celebration from '../images/celebrate.svg';
-import { useChessPlayerState,HistoricalGame , getPlayerStats} from "../ServerHooks";
+import { GameStateRouteProps } from './GameStateRoute';
+import { HistoricalGame , getPlayerStats} from "../ServerHooks";
 
-export function GameWon() {
+export function GameWon({thisUser,makeMove, gameState}:GameStateRouteProps) {
 
-  const {gameState,thisUser,makeMove,queueForGame} = useChessPlayerState(console.log);
   let opponentName = '';
   let userTime;
+  let duration;
+  let durationTimeDateFormat;
   if(gameState){
-    if(thisUser?.username === gameState.whitePlayer.username){
+    if(thisUser?.email === gameState.whitePlayer.email){
       opponentName = gameState.blackPlayer.username;
-      userTime = gameState.whiteRemainingTimeMs;
+      userTime = 1800000 - gameState.whiteRemainingTimeMs;
+      durationTimeDateFormat = new Date(userTime);
+      duration = durationTimeDateFormat.getUTCMinutes() + ':' + durationTimeDateFormat.getUTCSeconds();
     }else{
       opponentName = gameState.whitePlayer.username;
-      userTime = gameState.blackRemainingTimeMs;
+      userTime = 1800000 - gameState.blackRemainingTimeMs;
+      durationTimeDateFormat = new Date(userTime);
+      duration = durationTimeDateFormat.getUTCMinutes() + ':' + durationTimeDateFormat.getUTCSeconds();
     }
   }
 
@@ -35,6 +41,7 @@ export function GameWon() {
   let totalWinCounter = 0;
   let totalLossCounter = 0;
   let totalDrawCounter = 0;
+
 
   if(stats){
     for( let i = 0; i<stats.length; i++){
@@ -62,6 +69,10 @@ export function GameWon() {
   }
   }
 
+  let elo;
+  if(thisUser){
+    elo = Math.round(thisUser.elo);
+  }
   // Display the statistics of the player when they win a game
   return(
 
@@ -80,7 +91,7 @@ export function GameWon() {
                         {thisUser?.username} Vs. {opponentName}
                     </p>
                     <p className="lead">
-                        Time: {userTime} Minutes
+                        Time: {duration} Minutes
                     </p>
                     <p className="lead">
                         Total Wins: {totalWinCounter}
@@ -92,7 +103,7 @@ export function GameWon() {
                         Total Draws: {totalDrawCounter}
                     </p>
                     <p className="lead">
-                        ELO Score: {thisUser?.elo}
+                        ELO Score: {elo}
                     </p>
                 </div>
             </div>
