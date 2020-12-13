@@ -1,8 +1,8 @@
 import 'bootswatch/dist/slate/bootstrap.min.css';
 import React from 'react';
-import logo from './logo.png';
+import logo from '../images/logo.png';
 import { Router, Route, Link } from 'react-router-dom';
-import { useChessPlayerState} from "./ServerHooks"
+import { useChessPlayerState} from "../ServerHooks"
 
 export function Header() {
   const {gameState,thisUser,makeMove,queueForGame} = useChessPlayerState(console.log);

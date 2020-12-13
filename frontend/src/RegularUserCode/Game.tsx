@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import Chessboard from 'chessboardjsx';
 import timer from '../images/timer.png';
 import { InputChessMove } from "../ServerHooks";
@@ -32,17 +32,22 @@ function getDisplayedTimeFromRemainingTime(timeRemainingMs:number,timeTurnStarte
  */
 function ChessTimer({timeRemainingMs,timeTurnStarted}:{timeRemainingMs:number,timeTurnStarted:Date|null}){
     const [displayedTime,setDisplayedTime]=useState(getDisplayedTimeFromRemainingTime(timeRemainingMs,timeTurnStarted));
+    const propsRef=useRef({timeRemainingMs,timeTurnStarted});
 
     useEffect(()=>{
         const interval=setInterval(()=>{
+            const {timeRemainingMs,timeTurnStarted}=propsRef.current;
             setDisplayedTime(getDisplayedTimeFromRemainingTime(timeRemainingMs,timeTurnStarted))
         },1000);
         return ()=>clearInterval(interval);
-    },[timeRemainingMs,timeTurnStarted]);
-    return <>
+    },[]);
+    propsRef.current={timeRemainingMs,timeTurnStarted}
+    return <div className="game-time-container">
         <img src={timer} className="img-fluid" alt="timer" />
-        {displayedTime}
-    </>
+        <div className="game-time-string">
+            {displayedTime}
+        </div>
+    </div>
 }
 
 export function Game({thisUser, makeMove, gameState}:GameStateRouteProps) {
@@ -96,7 +101,7 @@ export function Game({thisUser, makeMove, gameState}:GameStateRouteProps) {
         <div className="container" id="typehead" >
             <div className="row">
                 <div className="col">
-                  <div className = "col">
+                  <div className = "col game-user-name">
                     {opponentName}
                   </div>
                     <ChessTimer timeRemainingMs={player1Time} timeTurnStarted={player1TurnStart} />
@@ -120,7 +125,7 @@ export function Game({thisUser, makeMove, gameState}:GameStateRouteProps) {
             <div className="row">
                 <div className="col">
                     <ChessTimer timeRemainingMs={player2Time} timeTurnStarted={player2TurnStart} />
-                    <div className = "col">
+                    <div className = "col game-user-name">
                       {thisUser.username}
                     </div>
                 </div>

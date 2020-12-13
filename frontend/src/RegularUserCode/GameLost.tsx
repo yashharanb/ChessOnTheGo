@@ -1,31 +1,61 @@
 import React, {useEffect, useState} from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {BrowserRouter as Router,Switch, Route,Link} from "react-router-dom";
-import drawBanner from '../images/drawBanner.png';
-import chessGame from '../images/chess-game.svg';
+import loseBanner from '../images/loseBanner.png';
+import lose from '../images/lose.svg';
 import { HistoricalGame , getPlayerStats} from "../ServerHooks";
 import { GameStateRouteProps } from './GameStateRoute';
+import {LoadingScreen} from "../Misc";
 
-export function GameDraw({thisUser,makeMove, gameState}:GameStateRouteProps) {
+
+export function getWinLossContent(thisUser:any, opponentName:any,userTime:any,opponentTime:any, totalWinCounter:any, totalLossCounter:any, totalDrawCounter:any, elo:any, stats:any){
+
+    let content=<LoadingScreen/>;
+    if(stats===null||stats.length!==0){
+        content=<>
+            <p className="lead">
+                {thisUser?.username} Vs. {opponentName}
+            </p>
+            <p className="lead">
+                {thisUser?.username} Time Remaining: {userTime} Minutes
+            </p>
+            <p className="lead">
+                {opponentName} Time Remaining: {opponentTime} Minutes
+            </p>
+            <p className="lead">
+                Total Wins: {totalWinCounter}
+            </p>
+            <p className="lead">
+                Total Loss: {totalLossCounter}
+            </p>
+            <p className="lead">
+                Total Draws: {totalDrawCounter}
+            </p>
+            <p className="lead">
+                ELO Score: {elo}
+            </p>
+        </>
+    }
+    return content;
+}
+
+export function GameLost({thisUser,makeMove, gameState}:GameStateRouteProps) {
 
   let opponentName = '';
-  let userTime;
   let opponentTime;
+  let userTime;
 
   if(gameState){
     if(thisUser?.username === gameState.whitePlayer.username){
       opponentName = gameState.blackPlayer.username;
       opponentTime = new Date(gameState.blackRemainingTimeMs).toLocaleTimeString('en-US', { minute: "numeric", second: "numeric" });
       userTime = new Date(gameState.whiteRemainingTimeMs).toLocaleTimeString('en-US', { minute: "numeric", second: "numeric" });
-
     }else{
       opponentName = gameState.whitePlayer.username;
       opponentTime = new Date(gameState.whiteRemainingTimeMs).toLocaleTimeString('en-US', { minute: "numeric", second: "numeric" });
       userTime = new Date(gameState.blackRemainingTimeMs).toLocaleTimeString('en-US', { minute: "numeric", second: "numeric" });
-
     }
   }
-
 
   const [stats,setStats]=useState<null|HistoricalGame[]>(null);
   // Display the user login screen
@@ -37,7 +67,6 @@ export function GameDraw({thisUser,makeMove, gameState}:GameStateRouteProps) {
     func()
   },[])
 
-  console.log(stats);
 
   let totalWinCounter = 0;
   let totalLossCounter = 0;
@@ -66,6 +95,7 @@ export function GameDraw({thisUser,makeMove, gameState}:GameStateRouteProps) {
       else{
         totalDrawCounter = totalDrawCounter+1;
       }
+
     }
   }
   }
@@ -74,46 +104,30 @@ export function GameDraw({thisUser,makeMove, gameState}:GameStateRouteProps) {
   if(thisUser){
     elo = Math.round(thisUser.elo);
   }
-  // Display the player statistics if the game is a draw
+    const content=getWinLossContent(thisUser, opponentName,userTime,opponentTime, totalWinCounter, totalLossCounter, totalDrawCounter, elo, stats)
+
+
+    // Display the statistics of the player when they lose a game
   return(
     <div className="container">
-      <img src={drawBanner} className="img-fluid banner" alt="drawBanner"  />
-      <div className="row">
-      <div className="col">
-        <img src={chessGame} className="img-fluid" alt="drawIcon" />
+    <div className = "row">
+      <div className = "col">
+      <img src={loseBanner} className="img-fluid" alt="loseBanner" />
       </div>
-        <div className="row" style={{width:"50%"}}>
+    </div>
 
+        <div className="row" style={{width:"50%",display: "inline-block"}}>
             <div className="col" >
-                <div className="border border-dark content-container bg-white text-dark" >
-                    <p className="lead">
-                        {thisUser?.username} Vs. {opponentName}
-                    </p>
-                    <p className="lead">
-                        {thisUser?.username} Time Remaining: {userTime} Minutes
-                    </p>
-                    <p className="lead">
-                        {opponentName} Time Remaining: {opponentTime} Minutes
-                    </p>
-                    <p className="lead">
-                        Total Wins: {totalWinCounter}
-                    </p>
-                    <p className="lead">
-                        Total Loss: {totalLossCounter}
-                    </p>
-                    <p className="lead">
-                        Total Draws: {totalDrawCounter}
-                    </p>
-                    <p className="lead">
-                        ELO Score: {elo}
-                    </p>
+                <div className="border border-dark content-container bg-white text-dark" style={{position: "relative", left: 0, top: 0}} >
+                    {content}
+                    <div className = "row">
+                    <div className = "col">
+                    <img src={lose} className="loseLogo" alt="loseLogo" style={{width:"20%", bottom:"0", position:"absolute", right:"0"}}/>
+                    </div>
+                    </div>
                 </div>
-            </div>
 
-        </div>
-        <div className="col">
-          <img src={chessGame} className="img-fluid" alt="drawIcon"  />
-        </div>
+            </div>
         </div>
         <p></p>
         <div className="container" style={{width:"40%"}}>
@@ -124,7 +138,8 @@ export function GameDraw({thisUser,makeMove, gameState}:GameStateRouteProps) {
           </div>
         </div>
     </div>
-  );
 
+
+  );
 
 }
