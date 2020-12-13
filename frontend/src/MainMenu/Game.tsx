@@ -65,6 +65,17 @@ export function Game({thisUser, makeMove, gameState}:GameStateRouteProps) {
             makeMove(newMove);
         }
     }
+
+    let opponentName;
+    if(gameState){
+      if(thisUser?.username === gameState.whitePlayer.username){
+        opponentName = gameState.blackPlayer.username;
+      }else{
+        opponentName = gameState.whitePlayer.username;
+      }
+    }
+
+
     const player1Time=isUserWhite ? gameState?.blackRemainingTimeMs:gameState?.whiteRemainingTimeMs;
     const player2Time=isUserWhite ? gameState?.whiteRemainingTimeMs:gameState?.blackRemainingTimeMs;
     const player1TurnStart=isPlayersTurn ? null:new Date(gameState.movingPlayerTurnStartTime);
@@ -74,6 +85,9 @@ export function Game({thisUser, makeMove, gameState}:GameStateRouteProps) {
         <div className="container" id="typehead" >
             <div className="row">
                 <div className="col">
+                  <div className = "col">
+                    {opponentName}
+                  </div>
                     <ChessTimer timeRemainingMs={player1Time} timeTurnStarted={player1TurnStart} />
                 </div>
             </div>
@@ -84,7 +98,7 @@ export function Game({thisUser, makeMove, gameState}:GameStateRouteProps) {
                         position={gameState.fenString}
                         calcWidth={calcWidth}
                         orientation={gameState?.whitePlayer.username===thisUser?.username ? "white":"black"}
-                        onDrop={onDrop}            
+                        onDrop={onDrop}
                     />
                 </div>
             </div>
@@ -92,6 +106,9 @@ export function Game({thisUser, makeMove, gameState}:GameStateRouteProps) {
             <div className="row">
                 <div className="col">
                     <ChessTimer timeRemainingMs={player2Time} timeTurnStarted={player2TurnStart} />
+                    <div className = "col">
+                      {thisUser.username}
+                    </div>
                 </div>
             </div>
         </div>
