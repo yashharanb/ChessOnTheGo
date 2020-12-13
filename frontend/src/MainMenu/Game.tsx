@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import Chessboard from 'chessboardjsx';
 import timer from '../images/timer.png';
 import { InputChessMove } from "../ServerHooks";
@@ -32,13 +32,16 @@ function getDisplayedTimeFromRemainingTime(timeRemainingMs:number,timeTurnStarte
  */
 function ChessTimer({timeRemainingMs,timeTurnStarted}:{timeRemainingMs:number,timeTurnStarted:Date|null}){
     const [displayedTime,setDisplayedTime]=useState(getDisplayedTimeFromRemainingTime(timeRemainingMs,timeTurnStarted));
+    const propsRef=useRef({timeRemainingMs,timeTurnStarted});
 
     useEffect(()=>{
         const interval=setInterval(()=>{
+            const {timeRemainingMs,timeTurnStarted}=propsRef.current;
             setDisplayedTime(getDisplayedTimeFromRemainingTime(timeRemainingMs,timeTurnStarted))
         },1000);
         return ()=>clearInterval(interval);
-    },[timeRemainingMs,timeTurnStarted]);
+    },[]);
+    propsRef.current={timeRemainingMs,timeTurnStarted}
     return <>
         <img src={timer} className="img-fluid" alt="timer" />
         {displayedTime}
