@@ -97,16 +97,16 @@ if(thisUser!==null&&stats!==null){
                 </div>
             </div>
             <div className="row">
-                <div className="col">
+                <div className="col mb-2">
                     <Link className="btn btn-secondary" to="../regular">Regular Game</Link>
                     </div>
-                <div className="col">
+                <div className="col mb-2">
                     <Link className="btn btn-secondary" to="../speed">Speed Game</Link>
                 </div>
-                <div className="col">
+                <div className="col mb-2">
                     <Link className="btn btn-secondary" to="../blitz">Blitz Game</Link>
                 </div>
-                <div className="col">
+                <div className="col mb-2">
                     <Link className="btn btn-secondary" to="../playerstats">Player Stats</Link>
                 </div>
             </div>
