@@ -34,7 +34,6 @@ export function PlayerStatistics() {
     let duration;
     let elo;
     let durationTimeInSeconds;
-    let durationTimeDateFormat;
     let array:Array<any>=[];
     let opponentElo;
     if(stats){
@@ -52,8 +51,7 @@ export function PlayerStatistics() {
           }
           timestamp = stats[i].startTime;
           durationTimeInSeconds = Date.parse(stats[i].endTime) - Date.parse(stats[i].startTime);
-          durationTimeDateFormat = new Date(durationTimeInSeconds);
-          duration = durationTimeDateFormat.getUTCMinutes() + ':' + durationTimeDateFormat.getUTCSeconds();
+          duration = new Date(durationTimeInSeconds).toLocaleTimeString('en-US', { minute: "numeric", second: "numeric" });
           elo = Math.round(stats[i].blackPlayerEloBefore);
           opponentElo = Math.round(stats[i].whitePlayerEloBefore);
         }else{
@@ -70,8 +68,7 @@ export function PlayerStatistics() {
           timestamp = stats[i].startTime;
           // @ts-ignore
           durationTimeInSeconds = Date.parse(stats[i].endTime) - Date.parse(stats[i].startTime);
-          durationTimeDateFormat = new Date(durationTimeInSeconds);
-          duration = durationTimeDateFormat.getUTCMinutes() + ':' + durationTimeDateFormat.getUTCSeconds();
+          duration = new Date(durationTimeInSeconds).toLocaleTimeString('en-US', { minute: "numeric", second: "numeric" });
           elo = Math.round(stats[i].whitePlayerEloBefore);
           opponentElo = Math.round(stats[i].blackPlayerEloBefore);
         }
