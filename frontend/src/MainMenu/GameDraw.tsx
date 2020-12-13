@@ -5,45 +5,44 @@ import drawBanner from '../images/drawBanner.png';
 import chessGame from '../images/chess-game.svg';
 import { HistoricalGame , getPlayerStats} from "../ServerHooks";
 import { GameStateRouteProps } from './GameStateRoute';
+import {LoadingScreen} from "../Misc";
+import {getWinLossContent} from "./GameLost";
 
 export function GameDraw({thisUser,makeMove, gameState}:GameStateRouteProps) {
+const [stats,setStats]=useState<null|HistoricalGame[]>(null);
 
-  let opponentName = '';
-  let userTime;
-  let opponentTime;
+    let opponentName = '';
+    let userTime;
+    let opponentTime;
 
-  if(gameState){
-    if(thisUser?.username === gameState.whitePlayer.username){
-      opponentName = gameState.blackPlayer.username;
-      opponentTime = new Date(gameState.blackRemainingTimeMs).toLocaleTimeString('en-US', { minute: "numeric", second: "numeric" });
-      userTime = new Date(gameState.whiteRemainingTimeMs).toLocaleTimeString('en-US', { minute: "numeric", second: "numeric" });
+    if(gameState){
+        if(thisUser?.username === gameState.whitePlayer.username){
+            opponentName = gameState.blackPlayer.username;
+            opponentTime = new Date(gameState.blackRemainingTimeMs).toLocaleTimeString('en-US', { minute: "numeric", second: "numeric" });
+            userTime = new Date(gameState.whiteRemainingTimeMs).toLocaleTimeString('en-US', { minute: "numeric", second: "numeric" });
 
-    }else{
-      opponentName = gameState.whitePlayer.username;
-      opponentTime = new Date(gameState.whiteRemainingTimeMs).toLocaleTimeString('en-US', { minute: "numeric", second: "numeric" });
-      userTime = new Date(gameState.blackRemainingTimeMs).toLocaleTimeString('en-US', { minute: "numeric", second: "numeric" });
-
+        }else{
+            opponentName = gameState.whitePlayer.username;
+            opponentTime = new Date(gameState.whiteRemainingTimeMs).toLocaleTimeString('en-US', { minute: "numeric", second: "numeric" });
+            userTime = new Date(gameState.blackRemainingTimeMs).toLocaleTimeString('en-US', { minute: "numeric", second: "numeric" });
+        }
     }
-  }
 
 
-  const [stats,setStats]=useState<null|HistoricalGame[]>(null);
-  // Display the user login screen
-  useEffect(()=>{
-    const func=async()=>{
-      const playerStats=await getPlayerStats();
-      setStats(playerStats);
-    }
-    func()
-  },[])
+    // Display the user login screen
+    useEffect(()=>{
+        const func=async()=>{
+            const playerStats=await getPlayerStats();
+            setStats(playerStats);
+        }
+        func()
+    },[])
 
-  console.log(stats);
+    let totalWinCounter = 0;
+    let totalLossCounter = 0;
+    let totalDrawCounter = 0;
 
-  let totalWinCounter = 0;
-  let totalLossCounter = 0;
-  let totalDrawCounter = 0;
-
-  if(stats){
+    if(stats){
     for( let i = 0; i<stats.length; i++){
     if(thisUser?.username === stats[i].blackPlayer.username){
       if(stats[i].winner === "black"){
@@ -67,15 +66,17 @@ export function GameDraw({thisUser,makeMove, gameState}:GameStateRouteProps) {
         totalDrawCounter = totalDrawCounter+1;
       }
     }
-  }
-  }
+    }
+    }
 
-  let elo;
-  if(thisUser){
+    let elo;
+    if(thisUser){
     elo = Math.round(thisUser.elo);
-  }
-  // Display the player statistics if the game is a draw
-  return(
+    }
+    const content=getWinLossContent(thisUser, opponentName,userTime,opponentTime, totalWinCounter, totalLossCounter, totalDrawCounter, elo, stats);
+
+    // Display the player statistics if the game is a draw
+    return(
     <div className="container">
       <img src={drawBanner} className="img-fluid banner" alt="drawBanner"  />
       <div className="row">
@@ -86,27 +87,7 @@ export function GameDraw({thisUser,makeMove, gameState}:GameStateRouteProps) {
 
             <div className="col" >
                 <div className="border border-dark content-container bg-white text-dark" >
-                    <p className="lead">
-                        {thisUser?.username} Vs. {opponentName}
-                    </p>
-                    <p className="lead">
-                        {thisUser?.username} Time Remaining: {userTime} Minutes
-                    </p>
-                    <p className="lead">
-                        {opponentName} Time Remaining: {opponentTime} Minutes
-                    </p>
-                    <p className="lead">
-                        Total Wins: {totalWinCounter}
-                    </p>
-                    <p className="lead">
-                        Total Loss: {totalLossCounter}
-                    </p>
-                    <p className="lead">
-                        Total Draws: {totalDrawCounter}
-                    </p>
-                    <p className="lead">
-                        ELO Score: {elo}
-                    </p>
+                    {content}
                 </div>
             </div>
 
@@ -117,14 +98,14 @@ export function GameDraw({thisUser,makeMove, gameState}:GameStateRouteProps) {
         </div>
         <p></p>
         <div className="container" style={{width:"40%"}}>
-        <div className="row"  >
-            <div className="col"  >
+        <div className="row" >
+            <div className="col" >
               <Link className="btn btn-secondary " to="./menu" >Main Menu</Link>
             </div>
           </div>
         </div>
     </div>
-  );
+    );
 
 
 }

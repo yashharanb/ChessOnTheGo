@@ -5,6 +5,39 @@ import loseBanner from '../images/loseBanner.png';
 import lose from '../images/lose.svg';
 import { HistoricalGame , getPlayerStats} from "../ServerHooks";
 import { GameStateRouteProps } from './GameStateRoute';
+import {LoadingScreen} from "../Misc";
+
+
+export function getWinLossContent(thisUser:any, opponentName:any,userTime:any,opponentTime:any, totalWinCounter:any, totalLossCounter:any, totalDrawCounter:any, elo:any, stats:any){
+
+    let content=<LoadingScreen/>;
+    if(stats===null||stats.length!==0){
+        content=<>
+            <p className="lead">
+                {thisUser?.username} Vs. {opponentName}
+            </p>
+            <p className="lead">
+                {thisUser?.username} Time Remaining: {userTime} Minutes
+            </p>
+            <p className="lead">
+                {opponentName} Time Remaining: {opponentTime} Minutes
+            </p>
+            <p className="lead">
+                Total Wins: {totalWinCounter}
+            </p>
+            <p className="lead">
+                Total Loss: {totalLossCounter}
+            </p>
+            <p className="lead">
+                Total Draws: {totalDrawCounter}
+            </p>
+            <p className="lead">
+                ELO Score: {elo}
+            </p>
+        </>
+    }
+    return content;
+}
 
 export function GameLost({thisUser,makeMove, gameState}:GameStateRouteProps) {
 
@@ -34,7 +67,6 @@ export function GameLost({thisUser,makeMove, gameState}:GameStateRouteProps) {
     func()
   },[])
 
-  console.log(stats);
 
   let totalWinCounter = 0;
   let totalLossCounter = 0;
@@ -72,7 +104,10 @@ export function GameLost({thisUser,makeMove, gameState}:GameStateRouteProps) {
   if(thisUser){
     elo = Math.round(thisUser.elo);
   }
-  // Display the statistics of the player when they lose a game
+    const content=getWinLossContent(thisUser, opponentName,userTime,opponentTime, totalWinCounter, totalLossCounter, totalDrawCounter, elo, stats)
+
+
+    // Display the statistics of the player when they lose a game
   return(
     <div className="container">
     <div className = "row">
@@ -84,27 +119,7 @@ export function GameLost({thisUser,makeMove, gameState}:GameStateRouteProps) {
         <div className="row" style={{width:"50%",display: "inline-block"}}>
             <div className="col" >
                 <div className="border border-dark content-container bg-white text-dark" style={{position: "relative", left: 0, top: 0}} >
-                    <p className="lead">
-                        {thisUser?.username} Vs. {opponentName}
-                    </p>
-                    <p className="lead">
-                        {thisUser?.username} Time Remaining: {userTime} Minutes
-                    </p>
-                    <p className="lead">
-                        {opponentName} Time Remaining: {opponentTime} Minutes
-                    </p>
-                    <p className="lead">
-                        Total Wins: {totalWinCounter}
-                    </p>
-                    <p className="lead">
-                        Total Loss: {totalLossCounter}
-                    </p>
-                    <p className="lead">
-                        Total Draws: {totalDrawCounter}
-                    </p>
-                    <p className="lead">
-                        ELO Score: {elo}
-                    </p>
+                    {content}
                     <div className = "row">
                     <div className = "col">
                     <img src={lose} className="loseLogo" alt="loseLogo" style={{width:"20%", bottom:"0", position:"absolute", right:"0"}}/>

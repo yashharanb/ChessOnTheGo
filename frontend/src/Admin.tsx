@@ -38,7 +38,7 @@ export function Admin() {
         <div className="admin">
             <div className="table_heading">Delete Accounts</div>
 
-            <div className="ag-theme-alpine" style={{ width: '100%', height: '100%' }}>
+            <div className="ag-theme-alpine" >
                 <AgGridReact onGridReady={onGridReady} domLayout={'autoHeight'} defaultColDef={{ resizable: true }} rowData={allUsers} rowSelection="multiple">
                     <AgGridColumn field="delete" maxWidth={150} checkboxSelection={true}></AgGridColumn>
                     <AgGridColumn field="username" maxWidth={300}></AgGridColumn>

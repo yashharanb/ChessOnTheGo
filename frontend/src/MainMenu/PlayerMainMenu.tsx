@@ -4,6 +4,7 @@ import {
     Link
 } from "react-router-dom";
 import { useChessPlayerState,HistoricalGame , getPlayerStats} from "../ServerHooks";
+import {LoadingScreen} from "../Misc";
 
 
 // This page displays the player's general game stats, and allows users to play a new game or view detailed stats.
@@ -58,31 +59,40 @@ let elo;
 if(thisUser){
   elo = Math.round(thisUser.elo);
 }
+let content=<LoadingScreen/>
+
+if(thisUser!==null&&stats!==null){
+    content=<>
+        <p className="lead">
+            <FontAwesomeIcon icon="chess-king" className="chess-king fa-3x"  style={{marginLeft: 15}}/>
+            Games played: {numberOfGamesPlayed}
+        </p>
+        <p className="lead">
+            <FontAwesomeIcon icon="chess-king" className="chess-king fa-3x"/>
+            Games won: {totalWinCounter}
+        </p>
+        <p className="lead">
+            <FontAwesomeIcon icon="chess-king" className="chess-king fa-3x"/>
+            Games lost: {totalLossCounter}
+        </p>
+        <p className="lead">
+            <FontAwesomeIcon icon="chess-king" className="chess-king fa-3x"/>
+            Games tied: {totalDrawCounter}
+        </p>
+        <p className="lead">
+            <FontAwesomeIcon icon="chess-king" className="chess-king fa-3x"/>
+            ELO Score: {elo}
+        </p>
+    </>
+}
+
+
     return (
         <div className="container player_menu">
             <div className="row">
                 <div className="col">
                     <div className="jumbotron brown-border content-container">
-                        <p className="lead">
-                            <FontAwesomeIcon icon="chess-king" className="chess-king fa-3x"  style={{marginLeft: 15}}/>
-                            Games played: {numberOfGamesPlayed}
-                        </p>
-                        <p className="lead">
-                            <FontAwesomeIcon icon="chess-king" className="chess-king fa-3x"/>
-                            Games won: {totalWinCounter}
-                        </p>
-                        <p className="lead">
-                            <FontAwesomeIcon icon="chess-king" className="chess-king fa-3x"/>
-                            Games lost: {totalLossCounter}
-                        </p>
-                        <p className="lead">
-                            <FontAwesomeIcon icon="chess-king" className="chess-king fa-3x"/>
-                            Games tied: {totalDrawCounter}
-                        </p>
-                        <p className="lead">
-                            <FontAwesomeIcon icon="chess-king" className="chess-king fa-3x"/>
-                            ELO Score: {elo}
-                        </p>
+                        {content}
                     </div>
                 </div>
             </div>

@@ -5,6 +5,8 @@ import winningBanner from '../images/winningBanner.png';
 import celebration from '../images/celebrate.svg';
 import { GameStateRouteProps } from './GameStateRoute';
 import { HistoricalGame , getPlayerStats} from "../ServerHooks";
+import {LoadingScreen} from "../Misc";
+import {getWinLossContent} from "./GameLost";
 
 export function GameWon({thisUser,makeMove, gameState}:GameStateRouteProps) {
 
@@ -70,6 +72,8 @@ export function GameWon({thisUser,makeMove, gameState}:GameStateRouteProps) {
   if(thisUser){
     elo = Math.round(thisUser.elo);
   }
+    const content=getWinLossContent(thisUser, opponentName,userTime,opponentTime, totalWinCounter, totalLossCounter, totalDrawCounter, elo, stats)
+
   // Display the statistics of the player when they win a game
   return(
 
@@ -84,27 +88,7 @@ export function GameWon({thisUser,makeMove, gameState}:GameStateRouteProps) {
         <div className="row" style={{width:"50%"}}>
             <div className="col" >
                 <div className="border border-dark content-container bg-white text-dark" >
-                    <p className="lead">
-                        {thisUser?.username} Vs. {opponentName}
-                    </p>
-                    <p className="lead">
-                        {thisUser?.username} Time Remaining: {userTime} Minutes
-                    </p>
-                    <p className="lead">
-                        {opponentName} Time Remaining: {opponentTime} Minutes
-                    </p>
-                    <p className="lead">
-                        Total Wins: {totalWinCounter}
-                    </p>
-                    <p className="lead">
-                        Total Loss: {totalLossCounter}
-                    </p>
-                    <p className="lead">
-                        Total Draws: {totalDrawCounter}
-                    </p>
-                    <p className="lead">
-                        ELO Score: {elo}
-                    </p>
+                    {content}
                 </div>
             </div>
           </div>

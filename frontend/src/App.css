@@ -53,9 +53,18 @@ body, html {
   margin: 30px 0px;
 }
 
-.admin, .stats {
+.admin, .stats, .overall-loading-screen {
   height: 100%;
   width: 100%;
+}
+.overall-loading-screen{
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
 }
 
 .table_heading {
