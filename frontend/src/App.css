@@ -3,7 +3,21 @@ body, html {
   width: 100%;
   background-color: #fff1d7 !important;
 }
+.game-time-string{
+  display: inline-block;
+  font-size: x-large;
+}
 
+.game-time-container{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+}
+.game-user-name{
+  font-size: large;
+}
 .App {
   text-align: center;
   height: 100%;
@@ -125,7 +139,7 @@ body, html {
 }
 
 #typehead{
-  width: min(70vh,100%);
+  width: min(60vh,100%);
 }
 
 [data-boardid="0"]::after, ::before{
@@ -155,7 +169,7 @@ body, html {
 }
 
 .player_menu {
-  margin-top: 5em;
+  margin-top: 2em;
 }
 
 .banner {

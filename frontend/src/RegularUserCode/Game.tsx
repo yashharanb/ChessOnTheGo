@@ -42,10 +42,12 @@ function ChessTimer({timeRemainingMs,timeTurnStarted}:{timeRemainingMs:number,ti
         return ()=>clearInterval(interval);
     },[]);
     propsRef.current={timeRemainingMs,timeTurnStarted}
-    return <>
+    return <div className="game-time-container">
         <img src={timer} className="img-fluid" alt="timer" />
-        {displayedTime}
-    </>
+        <div className="game-time-string">
+            {displayedTime}
+        </div>
+    </div>
 }
 
 export function Game({thisUser, makeMove, gameState}:GameStateRouteProps) {
@@ -99,7 +101,7 @@ export function Game({thisUser, makeMove, gameState}:GameStateRouteProps) {
         <div className="container" id="typehead" >
             <div className="row">
                 <div className="col">
-                  <div className = "col">
+                  <div className = "col game-user-name">
                     {opponentName}
                   </div>
                     <ChessTimer timeRemainingMs={player1Time} timeTurnStarted={player1TurnStart} />
@@ -123,7 +125,7 @@ export function Game({thisUser, makeMove, gameState}:GameStateRouteProps) {
             <div className="row">
                 <div className="col">
                     <ChessTimer timeRemainingMs={player2Time} timeTurnStarted={player2TurnStart} />
-                    <div className = "col">
+                    <div className = "col game-user-name">
                       {thisUser.username}
                     </div>
                 </div>
