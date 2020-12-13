@@ -116,9 +116,6 @@ export function GameWon({thisUser,makeMove, gameState}:GameStateRouteProps) {
         <p></p>
         <div className="container" style={{width:"40%"}}>
         <div className="row"  >
-            <div className="col " >
-              <Link className="btn btn-secondary " to="./Game" >New Game</Link>
-            </div>
             <div className="col"  >
               <Link className="btn btn-secondary " to="./menu" >Main Menu</Link>
             </div>
