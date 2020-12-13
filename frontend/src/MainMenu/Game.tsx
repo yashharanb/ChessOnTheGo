@@ -5,17 +5,25 @@ import { InputChessMove } from "../ServerHooks";
 import { GameStateRouteProps } from './GameStateRoute';
 
 
-function getDisplayedTimeFromRemainingTime(timeRemainingMs:number,timeTurnStarted:Date|null):number{
+function getDisplayedTimeFromRemainingTime(timeRemainingMs:number,timeTurnStarted:Date|null):string{
     //if not players turn, simply return rounded TimeRemainingMs
+    let actualTimeRemaining;
     if(timeTurnStarted===null){
-        return Math.round(timeRemainingMs/1000);
+        actualTimeRemaining=timeRemainingMs
     }
     else{
         const timeElapsedSinceTurnStarted:number=(new Date()).getTime() - timeTurnStarted.getTime();
-        const actualTimeRemaining=timeRemainingMs-timeElapsedSinceTurnStarted;
-        return Math.round(actualTimeRemaining/1000);
+        actualTimeRemaining=timeRemainingMs-timeElapsedSinceTurnStarted;
+    }
+
+    if(actualTimeRemaining<0){
+        return "00:00";
+    }
+    else{
+        return new Date(actualTimeRemaining).toLocaleTimeString('en-US', { minute: "numeric", second: "numeric" });
     }
 }
+
 /**
  *
  * @param timeRemainingMs
