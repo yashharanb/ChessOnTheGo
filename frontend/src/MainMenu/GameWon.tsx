@@ -9,19 +9,22 @@ import { HistoricalGame , getPlayerStats} from "../ServerHooks";
 export function GameWon({thisUser,makeMove, gameState}:GameStateRouteProps) {
 
   let opponentName = '';
-  let userTime;
   let duration;
   let durationTimeDateFormat;
+  let opponentTime;
+  let opponentDuration;
   if(gameState){
-    if(thisUser?.email === gameState.whitePlayer.email){
+    if(thisUser?.username === gameState.whitePlayer.username){
       opponentName = gameState.blackPlayer.username;
-      userTime = 1800000 - gameState.whiteRemainingTimeMs;
-      durationTimeDateFormat = new Date(userTime);
+      opponentTime = new Date(gameState.blackRemainingTimeMs);
+      opponentDuration = opponentTime.getUTCMinutes() + ':' + opponentTime.getUTCSeconds();
+      durationTimeDateFormat = new Date(gameState.whiteRemainingTimeMs);
       duration = durationTimeDateFormat.getUTCMinutes() + ':' + durationTimeDateFormat.getUTCSeconds();
     }else{
       opponentName = gameState.whitePlayer.username;
-      userTime = 1800000 - gameState.blackRemainingTimeMs;
-      durationTimeDateFormat = new Date(userTime);
+      opponentTime = new Date(gameState.whiteRemainingTimeMs);
+      opponentDuration = opponentTime.getUTCMinutes() + ':' + opponentTime.getUTCSeconds();
+      durationTimeDateFormat = new Date(gameState.blackRemainingTimeMs);
       duration = durationTimeDateFormat.getUTCMinutes() + ':' + durationTimeDateFormat.getUTCSeconds();
     }
   }
@@ -91,7 +94,10 @@ export function GameWon({thisUser,makeMove, gameState}:GameStateRouteProps) {
                         {thisUser?.username} Vs. {opponentName}
                     </p>
                     <p className="lead">
-                        Time: {duration} Minutes
+                        {thisUser?.username} Time Remaining: {duration} Minutes
+                    </p>
+                    <p className="lead">
+                        {opponentName} Time Remaining: {opponentDuration} Minutes
                     </p>
                     <p className="lead">
                         Total Wins: {totalWinCounter}

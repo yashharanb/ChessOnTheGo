@@ -9,20 +9,23 @@ import { GameStateRouteProps } from './GameStateRoute';
 export function GameDraw({thisUser,makeMove, gameState}:GameStateRouteProps) {
 
   let opponentName = '';
-  let userTime;
-  let durationTimeDateFormat;
   let duration;
+  let durationTimeDateFormat;
+  let opponentTime;
+  let opponentDuration;
 
   if(gameState){
     if(thisUser?.username === gameState.whitePlayer.username){
       opponentName = gameState.blackPlayer.username;
-      userTime = gameState.whiteRemainingTimeMs;
-      durationTimeDateFormat = new Date(userTime);
+      opponentTime = new Date(gameState.blackRemainingTimeMs);
+      opponentDuration = opponentTime.getUTCMinutes() + ':' + opponentTime.getUTCSeconds();
+      durationTimeDateFormat = new Date(gameState.whiteRemainingTimeMs);
       duration = durationTimeDateFormat.getUTCMinutes() + ':' + durationTimeDateFormat.getUTCSeconds();
     }else{
       opponentName = gameState.whitePlayer.username;
-      userTime = gameState.blackRemainingTimeMs;
-      durationTimeDateFormat = new Date(userTime);
+      opponentTime = new Date(gameState.whiteRemainingTimeMs);
+      opponentDuration = opponentTime.getUTCMinutes() + ':' + opponentTime.getUTCSeconds();
+      durationTimeDateFormat = new Date(gameState.blackRemainingTimeMs);
       duration = durationTimeDateFormat.getUTCMinutes() + ':' + durationTimeDateFormat.getUTCSeconds();
     }
   }
@@ -91,7 +94,10 @@ export function GameDraw({thisUser,makeMove, gameState}:GameStateRouteProps) {
                         {thisUser?.username} Vs. {opponentName}
                     </p>
                     <p className="lead">
-                        Time: {duration} Minutes
+                        {thisUser?.username} Time Remaining: {duration} Minutes
+                    </p>
+                    <p className="lead">
+                        {opponentName} Time Remaining: {opponentDuration} Minutes
                     </p>
                     <p className="lead">
                         Total Wins: {totalWinCounter}
