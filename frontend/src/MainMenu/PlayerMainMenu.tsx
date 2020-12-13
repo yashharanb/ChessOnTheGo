@@ -83,7 +83,13 @@ if(stats){
             </div>
             <div className="row">
                 <div className="col">
-                    <Link className="btn btn-secondary" to="../QueueOrGame">New Game</Link>
+                    <Link className="btn btn-secondary" to="../regular">Regular Game</Link>
+                    </div>
+                <div className="col">
+                    <Link className="btn btn-secondary" to="../speed">Speed Game</Link>
+                </div>
+                <div className="col">
+                    <Link className="btn btn-secondary" to="../blitz">Blitz Game</Link>
                 </div>
                 <div className="col">
                     <Link className="btn btn-secondary" to="../playerstats">Player Stats</Link>
