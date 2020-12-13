@@ -44,16 +44,16 @@ function App() {
       <Fragment>
         <Header/>
           <div className="App d-flex justify-content-center h-100 align-middle">
-            <Route path='/menu' component={PlayerMainMenu}/>
-            <Route path='/blitz' component={BlitzGame} />
-            <Route path='/speed' component={SpeedGame} />
-            <Route path='/regular' component={RegularGame} />
-            <Route path='/playerstats' component={PlayerStatistics} />
-            <Route path='/admin' component={Admin} />
-            <Route path='/Game' component={Game}/>
-            <Route path='/GameWon' component={GameWon}/>
-            <Route path='/GameLost' component={GameLost}/>
-            <Route path='/GameDraw' component={GameDraw}/>
+            <Route path='/menu' component={PlayerMainMenu} exact/>
+            <Route path='/blitz' component={BlitzGame} exact/>
+            <Route path='/speed' component={SpeedGame} exact/>
+            <Route path='/regular' component={RegularGame} exact/>
+            <Route path='/playerstats' component={PlayerStatistics} exact/>
+            <Route path='/admin' component={Admin} exact/>
+            <Route path='/Game' component={Game} exact/>
+            <Route path='/GameWon' component={GameWon} exact/>
+            <Route path='/GameLost' component={GameLost} exact/>
+            <Route path='/GameDraw' component={GameDraw} exact/>
           </div>
       </Fragment>
     </Switch>
