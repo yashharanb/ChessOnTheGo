@@ -14,7 +14,7 @@ import { GameLost } from './MainMenu/GameLost';
 import { GameDraw } from './MainMenu/GameDraw';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faChessKing, faSpinner } from '@fortawesome/free-solid-svg-icons';
-import { QueueOrGame } from './QueueOrGame';
+import { BlitzGame, RegularGame, SpeedGame } from './QueueOrGame';
 
 import {
   BrowserRouter as Router,
@@ -45,7 +45,9 @@ function App() {
         <Header/>
           <div className="App d-flex justify-content-center h-100 align-middle">
             <Route path='/menu' component={PlayerMainMenu}/>
-            <Route path='/QueueOrGame' component={QueueOrGame} />
+            <Route path='/blitz' component={BlitzGame} />
+            <Route path='/speed' component={SpeedGame} />
+            <Route path='/regular' component={RegularGame} />
             <Route path='/playerstats' component={PlayerStatistics} />
             <Route path='/admin' component={Admin} />
             <Route path='/Game' component={Game}/>
