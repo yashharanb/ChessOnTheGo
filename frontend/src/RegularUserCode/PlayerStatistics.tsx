@@ -4,8 +4,8 @@ import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import banner from './images/playerStats.png';
-import { useChessPlayerState,HistoricalGame, getPlayerStats} from "./ServerHooks";
+import banner from '../images/playerStats.png';
+import { useChessPlayerState,HistoricalGame, getPlayerStats} from "../ServerHooks";
 
 export function PlayerStatistics() {
     const [gridApi, setGridApi] = useState(Object);

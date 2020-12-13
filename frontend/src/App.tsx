@@ -2,17 +2,17 @@ import React, { Fragment } from 'react';
 import './App.css';
 import 'bootswatch/dist/slate/bootstrap.min.css';
 
-import { PlayerMainMenu } from './MainMenu/PlayerMainMenu';
-import { PlayerStatistics } from "./PlayerStatistics";
+import { PlayerMainMenu } from './RegularUserCode/PlayerMainMenu';
+import { PlayerStatistics } from "./RegularUserCode/PlayerStatistics";
 import { Admin } from './Admin';
-import { Header } from './header';
-import {Game} from './MainMenu/Game'
-import { GameWon } from './MainMenu/GameWon';
-import { GameLost } from './MainMenu/GameLost';
-import { GameDraw } from './MainMenu/GameDraw';
+import { Header } from './RegularUserCode/header';
+import {Game} from './RegularUserCode/Game'
+import { GameWon } from './RegularUserCode/GameWon';
+import { GameLost } from './RegularUserCode/GameLost';
+import { GameDraw } from './RegularUserCode/GameDraw';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faChessKing, faSpinner } from '@fortawesome/free-solid-svg-icons';
-import { BlitzGame, RegularGame, SpeedGame } from './QueueOrGame';
+import { BlitzGame, RegularGame, SpeedGame } from './RegularUserCode/Queue/QueueOrGame';
 
 import {
   BrowserRouter as Router,

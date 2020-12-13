@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
-import { GameStateRoute } from './MainMenu/GameStateRoute';
-import { Queue } from './Queue/Queue';
-import { useChessPlayerState } from './ServerHooks';
+import { GameStateRoute } from '../GameStateRoute';
+import { Queue } from './Queue';
+import { useChessPlayerState } from '../../ServerHooks';
 
 // Create 1.5 min long game
 export function BlitzGame(){
